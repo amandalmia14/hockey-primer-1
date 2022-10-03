@@ -1,10 +1,9 @@
 import os
 from os.path import exists
-
 import pandas as pd
 import requests
 from tqdm import tqdm
-
+import traceback
 from constant import game_type_map, seasons_year_matches_map
 
 
@@ -23,11 +22,17 @@ def get_data_by_gameid(game_id: str):
     @param game_id:Game id in the form of "2017020007"
     @return: Metadata for that particular game id
     """
-    data = requests.get(get_url(game_id=game_id))
-    return data.json()
+    try:
+        data = requests.get(get_url(game_id=game_id))
+        return data.json()
+    except Exception as e:
+        print(e)
+        print(traceback.print_exc())
+        pass
 
 
-def get_data_by_season(year: int, game_type: str, save_path: str):
+
+def get_data_by_season_type(year: int, game_type: str, save_path: str):
     """
     This function fetches all the metadata for a given game type occurred in the given season
     @param year: Year for which we need metadata for
@@ -35,21 +40,42 @@ def get_data_by_season(year: int, game_type: str, save_path: str):
     @param save_path: file where the csv will be saved
     @return: the metadata for a particular game type for the given season
     """
-    datafile_path = save_path + os.path.sep + str(year) + ".csv"
-    if exists(datafile_path):
-        return pd.read_csv(datafile_path)
-    else:
-        no_of_matches = seasons_year_matches_map[year]
-        total_season_data = []
-        for i in tqdm(range(1, no_of_matches + 1)):
-            formatted_game_id = str(year) + game_type_map[game_type] + format(i, "04")
-            match_data = get_data_by_gameid(game_id=formatted_game_id)
-            total_season_data.append(match_data)
+    try:
+        datafile_path = save_path + os.path.sep + str(year) + ".csv"
+        if exists(datafile_path):
+            return pd.read_csv(datafile_path)
+        else:
+            no_of_matches = seasons_year_matches_map[year]
+            total_season_data = []
+            for i in tqdm(range(1, no_of_matches + 1)):
+                formatted_game_id = str(year) + game_type_map[game_type] + format(i, "04")
+                match_data = get_data_by_gameid(game_id=formatted_game_id)
+                total_season_data.append(match_data)
 
-        df = pd.DataFrame.from_records(total_season_data)
-        df.to_csv(".." + os.path.sep + save_path + os.path.sep + str(year) + "_ " + game_type + ".csv", index=False)
-        return total_season_data
+            df = pd.DataFrame.from_records(total_season_data)
+            df.to_csv(".." + os.path.sep + save_path + os.path.sep + str(year) + "_ " + game_type + ".csv", index=False)
+            return total_season_data
+    except Exception as e:
+        print(e)
+        print(traceback.print_exc())
+        pass
+
+
+def get_all_data_by_season(year: int, out_path: str):
+    """
+    This function will fetch both the games which are regular seasons and playoffs for the entire season
+    @param year: season year
+    @param out_path: directory where the file will save
+    @return:None
+    """
+    try:
+        for key, val in seasons_year_matches_map.items():
+            get_data_by_season_type(year=year, game_type=val, save_path=out_path)
+    except Exception as e:
+        print(e)
+        print(traceback.print_exc())
+        pass
 
 
 if __name__ == "__main__":
-    results = get_data_by_season(year=2016, game_type="regular_season", save_path="data")
+    results = get_data_by_season_type(year=2016, game_type="regular_season", save_path="data")
