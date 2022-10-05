@@ -104,9 +104,9 @@ def get_all_data_by_season(year: int, out_path: str):
                     match_data = get_data_by_gameid(game_id=playoff_game_id)
                     playoffs_game_data_list.append(match_data)
 
-                save_data_to_csv(year=year, game_type="regular_season", season_data=reg_season_game_data_list,
+                save_data_to_csv(year=year, game_type="regular_season", data=reg_season_game_data_list,
                                  save_path=out_path)
-                save_data_to_csv(year=year, game_type="playoffs", season_data=playoffs_game_data_list,
+                save_data_to_csv(year=year, game_type="playoffs", data=playoffs_game_data_list,
                                  save_path=out_path)
 
                 return reg_season_game_data_list, playoffs_game_data_list, "Success"
