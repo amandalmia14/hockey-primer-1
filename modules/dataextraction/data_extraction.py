@@ -1,13 +1,13 @@
+import json
 import os
 import re
 import traceback
 from os.path import exists
 
-import pandas as pd
 import requests
 from tqdm import tqdm
 
-from constant import APIList, CustomRegex, data_dir
+from constant import APIList, CustomRegex, Directory
 
 
 def get_url(game_id: str):
@@ -62,17 +62,18 @@ def get_all_relevant_game_ids_by_season(season_year: int):
         pass
 
 
-def save_data_to_csv(year, game_type, data, save_path):
+def save_data_to_json(year, game_type, data, save_path):
     """
-    A function which will help the extracted data from the NHL API locally into a csv file
+    A function which will help the extracted data from the NHL API locally into a json file
     @param year: Year / Season which we want to extract the data
     @param game_type: Type of game, regular season or playoffs
     @param data: fetched data
-    @param save_path: csv path
+    @param save_path: json path
     @return: None
     """
-    df = pd.DataFrame.from_records(data)
-    df.to_csv(data_dir + save_path + os.path.sep + str(year) + "_" + game_type + ".csv", index=False)
+    path = Directory.DATA_DIR + save_path + os.path.sep + str(year) + "_" + game_type + ".json"
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
     return None
 
 
@@ -85,33 +86,37 @@ def get_all_data_by_season(year: int, out_path: str):
     """
     try:
         if 2015 < year < 2021:
-            if exists(data_dir + out_path):
-                regular_season_file_path = data_dir + out_path + os.path.sep + str(year) \
-                                           + "_regular_season.csv"
-                playoffs_file_path = data_dir + out_path + os.path.sep + str(year) + "_playoffs.csv"
-                reg_season_game_data_list = pd.read_csv(regular_season_file_path)
-                playoffs_game_data_list = pd.read_csv(playoffs_file_path)
+            if exists(Directory.DATA_DIR + out_path):
+                regular_season_file_path = Directory.DATA_DIR + out_path + os.path.sep + str(year) \
+                                           + "_regular_season.json"
+                playoffs_file_path = Directory.DATA_DIR + out_path + os.path.sep + str(year) + "_playoffs.json"
+                with open(regular_season_file_path, "r") as f:
+                    reg_season_game_data_list = json.load(f)
+
+                with open(playoffs_file_path, "r") as f:
+                    playoffs_game_data_list = json.load(f)
+
                 return reg_season_game_data_list, playoffs_game_data_list
             else:
-                os.mkdir(data_dir + out_path)
-                reg_season_game_data_list = []
-                playoffs_game_data_list = []
+                os.mkdir(Directory.DATA_DIR + out_path)
+                reg_season_game_data_dict = {}
+                playoffs_game_data_dict = {}
                 reg_season_gameid_list, playoffs_gameid_list = get_all_relevant_game_ids_by_season(season_year=year)
-                for reg_season_game_id in tqdm(reg_season_gameid_list):
+                for reg_season_game_id in tqdm(reg_season_gameid_list[:100]):
                     match_data = get_data_by_gameid(game_id=reg_season_game_id)
-                    reg_season_game_data_list.append(match_data)
+                    reg_season_game_data_dict[reg_season_game_id] = match_data
                 for playoff_game_id in tqdm(playoffs_gameid_list):
                     match_data = get_data_by_gameid(game_id=playoff_game_id)
-                    playoffs_game_data_list.append(match_data)
+                    playoffs_game_data_dict[playoff_game_id] = match_data
 
-                save_data_to_csv(year=year, game_type="regular_season", data=reg_season_game_data_list,
-                                 save_path=out_path)
-                save_data_to_csv(year=year, game_type="playoffs", data=playoffs_game_data_list,
-                                 save_path=out_path)
+                save_data_to_json(year=year, game_type="regular_season", data=reg_season_game_data_dict,
+                                  save_path=out_path)
+                save_data_to_json(year=year, game_type="playoffs", data=playoffs_game_data_dict,
+                                  save_path=out_path)
 
-                return reg_season_game_data_list, playoffs_game_data_list, "Success"
+                return reg_season_game_data_dict, playoffs_game_data_dict, "Success"
         else:
-            return [], [], "Invalid Year"
+            return {}, {}, "Invalid Year"
     except Exception as e:
         print(e)
         print(traceback.print_exc())
