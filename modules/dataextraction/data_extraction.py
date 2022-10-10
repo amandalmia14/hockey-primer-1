@@ -102,7 +102,7 @@ def get_all_data_by_season(year: int, out_path: str):
                 reg_season_game_data_dict = {}
                 playoffs_game_data_dict = {}
                 reg_season_gameid_list, playoffs_gameid_list = get_all_relevant_game_ids_by_season(season_year=year)
-                for reg_season_game_id in tqdm(reg_season_gameid_list[:100]):
+                for reg_season_game_id in tqdm(reg_season_gameid_list):
                     match_data = get_data_by_gameid(game_id=reg_season_game_id)
                     reg_season_game_data_dict[reg_season_game_id] = match_data
                 for playoff_game_id in tqdm(playoffs_gameid_list):
@@ -124,4 +124,7 @@ def get_all_data_by_season(year: int, out_path: str):
 
 
 if __name__ == "__main__":
-    results = get_all_data_by_season(year=2017, out_path="2017")
+    year = [2016, 2017, 2018, 2019, 2020]
+    for y in year:
+        results = get_all_data_by_season(year=y, out_path=str(y))
+    # results = get_all_data_by_season(year=2017, out_path="2017")
