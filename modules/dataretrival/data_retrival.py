@@ -38,7 +38,34 @@ def flatten_player_data(player_list):
     return flatten_string[:-1]
 
 
-def data_parsing(data, id, event_type):
+def get_shooter_goalie(player_list):
+    shooter = ""
+    goalie = ""
+    for player in player_list:
+        if player["playerType"] == "Shooter":
+            shooter = player["player"]["fullName"]
+        elif player["playerType"] == "Goalie":
+            goalie = player["player"]["fullName"]
+        else:
+            pass
+    return shooter, goalie
+
+
+def get_home_away_team(game_meta):
+    teams_data = game_meta["gameData"]["teams"]
+    return {"home": teams_data["home"]["name"], "away": teams_data["away"]["name"]}
+
+
+def get_side(game_meta):
+    periods_data = game_meta["liveData"]["linescore"]["periods"]
+    period_dict = {}
+    if len(periods_data) > 0:
+        for i, period in enumerate(periods_data):
+            period_dict[i + 1] = {"home": period["home"]["rinkSide"], "away": period["away"]["rinkSide"]}
+    return period_dict
+
+
+def data_parsing(data, id, event_type, period_dict, team_detail_dict):
     """
     This functions transforms the json data into the relevant information for the usecase
     @param data: entire metadata and details of the given game id
@@ -51,15 +78,24 @@ def data_parsing(data, id, event_type):
     about_data = data["about"]
     coordinates_data = data["coordinates"]
     team_data = data["team"]
+
+    shooter, goalie = get_shooter_goalie(players_data)
+
     data_dict = {"game_id": id, "event_code": result_data["eventCode"],
-                 "player_info": flatten_player_data(players_data), "event": result_data["event"],
+                 "player_info": flatten_player_data(players_data),
+                 "shooter": shooter, "goalie": goalie, "event": result_data["event"],
                  "event_type_id": result_data["eventTypeId"], "event_description": result_data["description"],
                  "event_secondary_type": result_data["secondaryType"],
+
+                 "home_team": team_detail_dict["home"], "away_team": team_detail_dict["away"],
+                 "home_team_side": period_dict[about_data["period"]]["home"],
+                 "away_team_size": period_dict[about_data["period"]]["away"],
+
                  "about_event_id": about_data["eventId"], "about_period": about_data["period"],
-                 "about_period_type": about_data["periodType"], "about_period_time": about_data["periodTime"],
+                 "about_period_type": about_data["periodType"], "game_time": about_data["periodTime"],
                  "about_time_remaining": about_data["periodTimeRemaining"], "about_date_time": about_data["dateTime"],
                  "about_goal_away": about_data["goals"]["away"], "about_goal_home": about_data["goals"]["home"],
-                 "coordinates": (coordinates_data["x"], coordinates_data["y"]), "team_name": team_data["name"]}
+                 "coordinates": (coordinates_data["x"], coordinates_data["y"]), "action_team_name": team_data["name"]}
     if event_type == "Goal":
         data_dict["event_strength_name"] = result_data["strength"]["name"]
         data_dict["event_strength_code"] = result_data["strength"]["code"]
@@ -84,18 +120,22 @@ def get_goal_shots_data_by_game_id(game_id: int):
     with open(json_path, "r") as f:
         playoffs_game_data_dict = json.load(f)
     game_data = playoffs_game_data_dict[str(game_id)]
+    period_dict = get_side(game_meta=game_data)
+    teams_type = get_home_away_team(game_meta=game_data)
     live_data = game_data["liveData"]["plays"]["allPlays"]
     final_list = []
     for i in live_data:
         if i["result"]["event"] in TYPES_OF_SHOTS:
             try:
-                parsed_data = data_parsing(data=i, id=game_id, event_type=i["result"]["event"])
+                parsed_data = data_parsing(data=i, id=game_id, event_type=i["result"]["event"],
+                                           period_dict=period_dict, team_detail_dict=teams_type)
                 final_list.append(parsed_data)
             except Exception as e:
                 print(e)
+
     shots_goals_df = pd.DataFrame(final_list)
     return shots_goals_df
 
 
 if __name__ == '__main__':
-    print(get_goal_shots_data_by_game_id(game_id=2017020001))
+    print(get_goal_shots_data_by_game_id(game_id=2017020001).head())
