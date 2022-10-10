@@ -41,7 +41,7 @@ venv/
 
 # data
 *.csv
-
+data
 # PyCharm
 *.idea
 
