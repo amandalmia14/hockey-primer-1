@@ -45,6 +45,11 @@ def flatten_player_data(player_list):
 
 
 def get_shooter_goalie(player_list):
+    """
+    This function gets the name of the goalie and the shooter
+    @param player_list: return the shooter and goalie player names
+    @return:
+    """
     shooter = ""
     goalie = ""
     for player in player_list:
@@ -58,11 +63,22 @@ def get_shooter_goalie(player_list):
 
 
 def get_home_away_team(game_meta):
+    """
+    This functions get the team data
+    @param game_meta: game metadata
+    @return: dictionary of the team information
+    """
     teams_data = game_meta["gameData"]["teams"]
-    return {"home": teams_data["home"]["name"], "away": teams_data["away"]["name"]}
+    return {"home": teams_data["home"]["name"], "home_abv" : teams_data["home"]["abbreviation"],
+            "away": teams_data["away"]["name"], "away_abv": teams_data["away"]["abbreviation"]}
 
 
 def get_side(game_meta):
+    """
+    This fucntion gets the team on which  rink side they were there in each period.
+    @param game_meta: game metadata
+    @return: a dictionary for each period home and away team rink side
+    """
     periods_data = game_meta["liveData"]["linescore"]["periods"]
     period_dict = {}
     if len(periods_data) > 0:
@@ -93,7 +109,8 @@ def data_parsing(data, id, event_type, period_dict, team_detail_dict):
                  "shooter": shooter, "goalie": goalie, "event": result_data["event"],
                  "event_type_id": result_data["eventTypeId"], "event_description": result_data["description"],
 
-                 "home_team": team_detail_dict["home"], "away_team": team_detail_dict["away"],
+                 "home_team": team_detail_dict["home"], "home_team_abv": team_detail_dict["home_abv"],
+                 "away_team": team_detail_dict["away"], "away_team_abv": team_detail_dict["away_abv"],
 
                  "about_event_id": about_data["eventId"], "about_period": about_data["period"],
                  "about_period_type": about_data["periodType"], "game_time": about_data["periodTime"],
@@ -170,6 +187,11 @@ def get_goal_shots_data_by_game_id(game_id: int):
 
 
 def get_goal_shots_by_season(season_year: int):
+    """
+    This functions get the goals and shorts data by the given input season
+    @param season_year: The year for which we need to get the goal shots data
+    @return: dataframe for the entire season.
+    """
     regular_data_path, playoffs_data_paths = get_json_path(season=season_year)
     with open(regular_data_path, "r") as f:
         regular_game_data_dict = json.load(f)
