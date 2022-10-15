@@ -74,10 +74,22 @@ extractions, data retrival (data parsing)
 ## Data Extractions
 
 <details>
-<summary>Goals By Season for the season 2020</summary>
+<summary>Tidy Data</summary>
      <h4>Insights</h4>
-     To be add here. 
-     <img src="figures/df.png">
+     There are too much of information available from the NHL API at this moment not all informations are useful, based 
+     on the project we take the relevant data out from the nested json and created a single tabular structure aka
+     Dataframe. Below is a glimpse of the tody data which we extracted. 
+
+     ```
+     TODO
+     Discuss how you could add the actual strength information (i.e. 5 on 4, etc.) to both shots and goals, given the 
+     other event types (beyond just shots and goals) and features available.
+     In a few sentences, discuss at least 3 additional features you could consider creating from the data available in 
+     this dataset. We’re not looking for any particular answers, but if you need some inspiration, could a shot or 
+     goal be classified as a rebound/shot off the rush (explain how you’d determine these!)
+     ```
+
+<img src="figures/df.png">
 </details>
 
 
