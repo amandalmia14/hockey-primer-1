@@ -31,9 +31,15 @@ Table of contents
 
 # Introduction
 
+To be udpated
+
 ## About NHL
 
+To be udpated
+
 ## Motivation
+
+To be udpated
 
 # Installation
 
@@ -142,7 +148,16 @@ extractions, data retrival (data parsing)
 
 ## Advance Visualisations 
 
+<details>
+<summary>Details</summary>
+     <h4>Insights</h4>
+     To be add here. 
+     <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png"/>
+</details>
+
 # Conclusion
+
+To be udpated
 
 # Authors
 - ABC 
