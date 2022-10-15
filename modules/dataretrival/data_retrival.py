@@ -238,6 +238,7 @@ def get_goal_shots_by_season(season_year: int):
                     break
 
     shots_goals_df = pd.DataFrame(total_game_list)
+    shots_goals_df.to_pickle(Directory.DATA_DIR + str(season_year) + "/adv_vis.pkl")
     return shots_goals_df
 
 
