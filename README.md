@@ -68,32 +68,45 @@ extractions, data retrival (data parsing)
 - `notebooks` - For all kinds of visualisations, insights of the data can be accessed through the notebooks. 
 - `constants.py` - As name suggested, all the common functions and variables reside in this file.
 
-# Data Insights
+# Data APIs
 
-<details>
-<summary>Goals By Season for the season 2020</summary>
-     <h4>Insights</h4>
-     To be add here. 
-     <img src="figures/df.png">
-</details>
+In this project as of now we have used two APIs which was provided by NHL,
+ - `GET_ALL_MATCHES_FOR_A_GIVEN_SEASON = "https://statsapi.web.nhl.com/api/v1/schedule?season=XXXX"`
+   - This API fetch all the matches metadata for a given input season, using this API we are getting the map of 
+   Matches ID and the type of Match it is like `regular season or playoffs`
+ - `GET_ALL_DATA_FOR_A_GIVEN_MATCH = "https://statsapi.web.nhl.com/api/v1/game/XXXXXXXXXX/feed/live/"`
+   - This API fetch all the data in a granular form for a given match id, where we gather the insights subsequently in 
+   the following tasks.
+ - In order to download a particular data for a season, update the file `modules\dataextraction\data_extraction.py` with
+the `year` variable (one can put multiple seasons to download as well)
+ - Once the update is done, run `data_extraction.py` it will download the data and places under a folder with the season
+year with two json files, with regular season games and playoffs respectively. 
 
-## Data Extractions
-
-<details>
-<summary>Tidy Data</summary>
-     <h4>Insights</h4>
-     There are too much of information available from the NHL API at this moment not all informations are useful, based 
-     on the project we take the relevant data out from the nested json and created a single tabular structure aka
-     Dataframe. Below is a glimpse of the tody data which we extracted. 
+## Data Retrieval
 
      ```
      TODO
      Discuss how you could add the actual strength information (i.e. 5 on 4, etc.) to both shots and goals, given the 
      other event types (beyond just shots and goals) and features available.
+     Ans: 
+
      In a few sentences, discuss at least 3 additional features you could consider creating from the data available in 
      this dataset. We’re not looking for any particular answers, but if you need some inspiration, could a shot or 
      goal be classified as a rebound/shot off the rush (explain how you’d determine these!)
+    
+    - We can classify a shit be rebound shot or not based on the timing on the previous shot. 
+    - Based on the given even shot of the player, how likely the shot can be a goal
+    - 
+    
      ```
+     
+     
+<details>
+<summary>Tidy Data</summary>
+     <h4>Insights</h4>
+     There are too much of information available from the NHL API at this moment not all information are useful, based 
+     on the project we take the relevant data out from the nested json and created a single tabular structure aka
+     Dataframe. Below is a glimpse of the tidy data which we had published for further data analysis.
 
 <img src="figures/df.png">
 </details>
