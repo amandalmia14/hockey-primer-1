@@ -3,3 +3,4 @@ requests
 numpy
 jupyter
 tqdm
+matplotlib
