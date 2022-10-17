@@ -69,7 +69,7 @@ def get_home_away_team(game_meta):
     @return: dictionary of the team information
     """
     teams_data = game_meta["gameData"]["teams"]
-    return {"home": teams_data["home"]["name"], "home_abv" : teams_data["home"]["abbreviation"],
+    return {"home": teams_data["home"]["name"], "home_abv": teams_data["home"]["abbreviation"],
             "away": teams_data["away"]["name"], "away_abv": teams_data["away"]["abbreviation"]}
 
 
@@ -235,7 +235,6 @@ def get_goal_shots_by_season(season_year: int):
                     print(e)
                     import traceback
                     print(traceback.print_exc())
-                    break
 
     shots_goals_df = pd.DataFrame(total_game_list)
     shots_goals_df.to_pickle(Directory.DATA_DIR + str(season_year) + "/adv_vis.pkl")
