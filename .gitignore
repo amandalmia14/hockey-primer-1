@@ -44,6 +44,8 @@ venv/
 data
 # PyCharm
 *.idea
-
+# notebooks
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
 # Misc
 *.DS_Store
