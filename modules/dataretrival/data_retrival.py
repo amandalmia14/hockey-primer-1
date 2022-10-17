@@ -90,6 +90,12 @@ def get_side(game_meta):
     return period_dict
 
 
+def get_cordinates(coordinates_data):
+    if "x" not in coordinates_data or "y" not in coordinates_data:
+        return None
+    return (coordinates_data["x"], coordinates_data["y"])
+
+
 def data_parsing(data, id, event_type, period_dict, team_detail_dict):
     """
     This functions transforms the json data into the relevant information for the usecase
@@ -123,13 +129,7 @@ def data_parsing(data, id, event_type, period_dict, team_detail_dict):
     else:
         data_dict["event_secondary_type"] = result_data["secondaryType"]
 
-    x = "NA"
-    y = "NA"
-    if "x" in coordinates_data:
-        x = coordinates_data["x"]
-    if "y" in coordinates_data:
-        y = coordinates_data["y"]
-    data_dict["coordinates"] = (x, y)
+    data_dict["coordinates"] = get_cordinates(coordinates_data)
 
     if about_data["period"] not in period_dict:
         data_dict["home_team_side"] = "NA-Shootout"
