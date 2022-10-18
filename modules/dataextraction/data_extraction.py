@@ -87,6 +87,7 @@ def get_all_data_by_season(year: int, out_path: str):
     try:
         if 2015 < year < 2021:
             if exists(Directory.DATA_DIR + out_path):
+                print("Data exists locally, fetching the data from your system !!")
                 regular_season_file_path = Directory.DATA_DIR + out_path + os.path.sep + str(year) \
                                            + "_regular_season.json"
                 playoffs_file_path = Directory.DATA_DIR + out_path + os.path.sep + str(year) + "_playoffs.json"
