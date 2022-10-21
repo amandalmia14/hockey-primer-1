@@ -288,9 +288,14 @@ To be added
 
 # Authors
 
-- ABC
-- DEF
-- GHI
-- JKL
+**Aman Dalmia:** First year student of MSc. Computer Science at UdeM, have an interest in Information Retrieval and Natural Language Processing. <br>
+  *“Don’t create a problem statement for an available solution, rather work towards a solution for a given problem”*
 
+**Mohsen Dehghani:** Master’s degree in Optimization 2010-2013 and student of DESS in Machin learning at MILA 2022-2023. I start a master’s degree in Machin learning at MILA 2022-2023 love to show how to apply theoretical mathematical knowledge to real-life problems by using computer languages such as Java or Python.
+
+**Raphael Bourque:** Training in Psychiatry (medicine) and master degree in Computational Medicine
+
+**Vaibhav Jade:** First year student of MSc. Computer Science at UdeM. 
+
+*(Names are in ascending order)*
 
