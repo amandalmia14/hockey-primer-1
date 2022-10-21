@@ -1,13 +1,39 @@
 import json
 import os
+import pickle
 import re
 import traceback
 from os.path import exists
 
+import pandas as pd
 import requests
 from tqdm import tqdm
 
 from constant import APIList, CustomRegex, Directory
+
+
+def get_no_of_matches_team_map(season_year):
+    """
+    This function will fetch no of matches a team has played season wise.
+    Args:
+        season_year: season for which we need to find it out no of matches a team has played.
+    Returns: None; creates a pickle file
+
+    """
+    response = requests.get(APIList.GET_ALL_MATCHES_FOR_A_GIVEN_SEASON + str(season_year) + str(season_year + 1))
+    list_of_all_matches = response.json()["dates"]
+    game_id = []
+    home_team = []
+    away_team = []
+    for i in list_of_all_matches:
+        for j in i["games"]:
+            game_id.append(j["gamePk"])
+            home_team.append(j["teams"]["home"]["team"]["name"])
+            away_team.append(j["teams"]["away"]["team"]["name"])
+    df = pd.DataFrame({'game_id': game_id, 'home_team': home_team, 'away_team': away_team})
+    with open(Directory.DATA_DIR + str(season_year) + os.path.sep + 'no_of_matches_' + str(season_year) + '_.p',
+              'wb') as fp:
+        pickle.dump(df, fp, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def get_url(game_id: str):
@@ -100,6 +126,7 @@ def get_all_data_by_season(year: int, out_path: str):
                 return reg_season_game_data_list, playoffs_game_data_list
             else:
                 os.mkdir(Directory.DATA_DIR + out_path)
+                get_no_of_matches_team_map(season_year=year)
                 reg_season_game_data_dict = {}
                 playoffs_game_data_dict = {}
                 reg_season_gameid_list, playoffs_gameid_list = get_all_relevant_game_ids_by_season(season_year=year)
@@ -128,4 +155,3 @@ if __name__ == "__main__":
     year = [2016, 2017, 2018, 2019, 2020]
     for y in year:
         results = get_all_data_by_season(year=y, out_path=str(y))
-    # results = get_all_data_by_season(year=2017, out_path="2017")
