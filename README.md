@@ -48,7 +48,7 @@ the English Premier League [EPL](https://en.wikipedia.org/wiki/National_Hockey_L
 ## Motivation
 
 The purpose of this project is to provide a Python API for accessing NHL game data including plays by plays
-informations such as game summaries, player stats and play-by-play visualizations. They’re all lots good information
+information such as game summaries, player stats and play-by-play visualizations. They’re all lots good information
 that is hides on NHL API website scraping process regarding the outputs. In this project we are trying to show all NHL
 analytics we could like to seek from NHL API. Our package can extract let’s say all most the game summary report as
 well as show and finally permit advanced data visualisations.
@@ -172,7 +172,7 @@ In this project as of now we have used two APIs which was provided by NHL,
 ## Simple Visualisations
 
 <details>
-<summary>Goals By Season for the season 2016</summary>
+<summary>Goals and missed shots, by shot type for season 2016-2017</summary>
      <h4>Insights</h4>
      The most dangerous types of shots for this 2016-2017 season are “deflected” (19.8% of success) followed by 
      “tip-in” shots (17.9% of success). By “most dangerous”, we mean that these shots are the ones that end up the most 
@@ -193,60 +193,43 @@ In this project as of now we have used two APIs which was provided by NHL,
 </details>
 
 <details>
-<summary>Goals By Season for the season 2018</summary>
-     <h4>Insights</h4>
-     The proportion of goals over all shots increases overall exponentially as the distance diminishes, with a
-     maximum proportion of goals >25% when goals are shot at less than 5 feet from the goal. We also note a small,
-     local maximum at 75 to 80 feet. This distribution did not increase significantly for seasons 2018-19 to 2020-21. This local
-     maximum could suggest that there is another variable (e.g. shot type or other) that could underlie this
-     distribution.
-     <br>
-     <br>
-     We chose this figure after having considered and visualized different types of figures. First, we visualized
-     violin plots of the distribution of goals and missed shots; however, these did not intuitively represent the chance
-     (proportion) of goals over all shots per se, and the result was dependent on some assumption on the kernel size.
-     We also experimented computing a logistic regression to predict goals from the distance category, which worked fine.
-     <br>
-     <br>
-     Finally, we chose to come back to the most simple and intuitive method, which is to bin the distance into categories,
-     and plot the proportion of goals for each bin. We chose to divide the distance into equal bins (as opposed to
-     percentiles or other kind of distribution), in order to be able to draw direct conclusion about the relationship of
-     goals to the absolute value of distance by visualizing the figure.
-<img src="figures/figure_2_goal_by_distance2018.png"/>
-</details>
-
-<details>
-<summary>Goals By Season for the season 2019</summary>
-     <h4>Insights</h4>
-     Overall, the most dangerous type of shot is the “tip-in” shot taken at a distance of less than 5 feet, followed
-     closely by “back-hand” shots: more than 40% of these shots result in a goal. The relationship found in the
-     previous questions, i.e. that the probability of a goal augments exponentially as the distance decreases,
-     holds true overall for most types of shots. However, the “deflected” and “tip-in” shots have a second maximum
-     between around 30 and 60 feet.
-     <br>
-     <br>
-     Importantly, the “back-hand” shot has a second maximum at about 80 feet, and the slap-shot has a second maximum
-     at more than 90 feet. This could explain the small local maximum at that distance that we observed in the global
-     distribution of all shots at the previous figure.
-     <br>
-     <br>
-     Finally, the curves are somewhat irregular, and adding more data (e.g. averaging through a few years) could add more
-     smoothness in the results. Note that to have more smoothed curves and remove outliers, we did not plot the points for
-     which we had less than 10 total observations for that type of shot and at that distance in that season.
-<img src="figures/figure_2_goal_by_distance2019.png"/>
-</details>
-
-<details>
 <summary>Goals By Season for the season 2020</summary>
      <h4>Insights</h4>
-     To be added here. 
+     The proportion of goals over all shots increases overall exponentially as the distance diminishes, with a maximum 
+     proportion of goals >25% when goals are shot at less than 5 feet from the goal. We also note a small, local maximum
+     at 75 to 80 feet. This distribution did not increase significantly for seasons 2018-19 to 2020-21. This local 
+     maximum could suggest that there is another variable (e.g. shot type or other) that could underlie this 
+     distribution. 
+     <br>
      <img src="figures/figure_2_goal_by_distance2020.png"/>
 </details>
 
 <details>
 <summary>Goals By Distance and Shot type for the season 2017</summary>
      <h4>Insights</h4>
-     To be added here. 
+     We chose this figure after having considered and visualized different types of figures. First, we visualized 
+     violin plots of the distribution of goals and missed shots; however, these did not intuitively represent the 
+     chance (proportion) of goals over all shots per se, and the result was dependent on some assumption on the kernel 
+     size. We also experimented computing a logistic regression to predict goals from the distance category, which 
+     worked fine.
+     <br>
+     Finally, we chose to come back to the most simple and intuitive method, which is to bin the distance into 
+     categories, and plot the proportion of goals for each bin. We chose to divide the distance into equal bins (as 
+     opposed to percentiles or other kind of distribution), in order to be able to draw direct conclusion about the 
+     relationship of goals to the absolute value of distance by visualizing the figure. Overall, the most dangerous \
+     type of shot is the “tip-in” shot taken at a distance of less than 5 feet, followed closely by “back-hand” 
+     shots: more than 40% of these shots result in a goal. The relationship found in the previous questions, i.e. that 
+     the probability of a goal augments exponentially as the distance decreases, holds true overall for most types of 
+     shots. However, the “deflected” and “tip-in” shots have a second maximum between around 30 and 60 feet.
+     <br>
+     Importantly, the “back-hand” shot has a second maximum at about 80 feet, and the slap-shot has a second maximum at 
+     more than 90 feet. This could explain the small local maximum at that distance that we observed in the global 
+     distribution of all shots at the previous figure.
+     <br>
+     Finally, the curves are somewhat irregular, and adding more data (e.g. averaging through a few years) could add 
+     more smoothness in the results. Note that to have more smoothed curves and remove outliers, we did not plot the 
+     points for which we had less than 10 total observations for that type of shot and at that distance in that season.
+     <br>
      <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png">
 </details>
 
