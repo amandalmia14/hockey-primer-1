@@ -253,12 +253,33 @@ In this project as of now we have used two APIs which was provided by NHL,
 ## Advance Visualisations
 
 <details>
-<summary>Season 2016-2017 Comparison </summary>
+<summary>Comparison of Colorado Avalanche avg shots between season 2016-2017 and 2020-2021  </summary>
      <h4>Insights</h4>
      To be added here. 
      <br>
-     <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png" width="325">
-     <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png" width="325"> 
+     <img src="figures/Colorado_Avalanche_2016.png" width="325">
+     <img src="figures/Colorado_Avalanche_2020.png" width="325"> 
+</details>
+<details>
+<summary>Shots location comparison over the last three years in between Buffalo Sabres and Tampa Bay Lightning</summary>
+     <h4>Insights</h4>
+     Season 2018-2019 
+     <br>
+     <img src="figures/Buffalo_Sabres_2018.png" width="325">
+     <img src="figures/Tampa_Bay_2018.png" width="325">
+     <br>
+     <h4>Insights</h4>
+     Season 2018-2019 
+     <br>
+     <img src="figures/Buffalo_Sabres_2019.png" width="325">
+     <img src="figures/Tampa_Bay_2019.png" width="325">
+     <br>
+     <h4>Insights</h4>
+     Season 2018-2019 
+     <br>
+     <img src="figures/Buffalo_Sabres_2020.png" width="325">
+     <img src="figures/Tampa_Bay_2020.png" width="325">
+     <br>
 </details>
 
 # Conclusion
