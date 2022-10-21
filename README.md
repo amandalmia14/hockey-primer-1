@@ -18,13 +18,17 @@ Table of contents
     * [Install Dependencies](#install-dependencies)
 * [Usage](#usage)
     * [Download Data](#download-data)
+    * [Run Interactive Debugging Tool](#run-interactive-debugging-tool)
+    * [Create Tidy Data for Visualisation](#create-tidy-data-for-visualisation)
+    * [Run Simple Visualisation](#run-simple-visualisation)
+    * [Run Advance Visualisation](#run-advance-visualisation)
 * [Project Structure](#project-structure)
-
-* [Data Insights](#dependency)
-    * [Data Extractions](#docker)
-    * [Interactive Debugging Tool](#docker)
-    * [Simple Visualisation](#local)
-    * [Advance Visualisation](#public)
+* [Data APIs](#data-apis)
+* [Data Insights](#data-insights)
+    * [Data Extractions](#data-extractions)
+    * [Interactive Debugging Tool](#interactive-debugging-tool)
+    * [Simple Visualisation](#simple-visualisations)
+    * [Advance Visualisation](#advance-visualisations)
 
 * [Conclusion](#conclusion)
 * [Authors](#authors)
@@ -51,13 +55,13 @@ well as show and finally permit advanced data visualisations.
 
 # Installation
 
-## Setting up Environment
+## Setup Environment
 
 - Git clone the [repository](https://github.com/amandalmia14/hockey-primer-1)
 - Make sure Python is installed on the system
 - Create a virtual environment / conda environment
 
-## Installing Dependencies
+## Install Dependencies
 
 - Activate the environment and run `pip install -r requirement.txt` this will download all the dependencies related to
   this project.
@@ -70,21 +74,21 @@ well as show and finally permit advanced data visualisations.
 - Run the python script which resides at `modules/dataextraction/data_extraction.py`, this script will fetch the data 
 of the seasons starting from 2016 to 2020.
 
-## Running Interactive Debugging Tool
+## Run Interactive Debugging Tool
 - Run the `jupyter notebook` locally inside the project folder
 - Navigate to the `notebook` folder 
 - Run `3_interactive_debugging_tool.ipynb` file
 
-## Creating Tidy Data for Visualisation
+## Create Tidy Data for Visualisation
 - Run the python script which resides at `modules/dataretrival/data_retrival.py`, this script will creates the tidy data 
 and save the data into a pickle file for all the seasons starting from 2016 to 2020.
 
-## Running Simple Visualisation
+## Run Simple Visualisation
 - Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
 - Navigate to the `notebook` folder 
 - Run `4_simple_visualizations.ipynb` file
 
-## Running Advance Visualisation
+## Run Advance Visualisation
 - Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
 - Navigate to the `notebook` folder 
 - Run `7_interactive_figure.ipynb` file
@@ -118,7 +122,9 @@ In this project as of now we have used two APIs which was provided by NHL,
   season
   year with two json files, with regular season games and playoffs respectively.
 
-## Data Retrieval
+# Data Insights
+
+## Data Extractions
 
      ```
      TODO
