@@ -90,10 +90,16 @@ def get_side(game_meta):
     return period_dict
 
 
-def get_cordinates(coordinates_data):
+def get_coordinates(coordinates_data):
+    """
+    This functions return the coordinates as a tuple, if either of the data isn't available, it returns None
+    Args:
+        coordinates_data: coordinate dict
+    Returns: x, y as a tuple
+    """
     if "x" not in coordinates_data or "y" not in coordinates_data:
         return None
-    return (coordinates_data["x"], coordinates_data["y"])
+    return coordinates_data["x"], coordinates_data["y"]
 
 
 def data_parsing(data, id, event_type, period_dict, team_detail_dict):
@@ -129,7 +135,7 @@ def data_parsing(data, id, event_type, period_dict, team_detail_dict):
     else:
         data_dict["event_secondary_type"] = result_data["secondaryType"]
 
-    data_dict["coordinates"] = get_cordinates(coordinates_data)
+    data_dict["coordinates"] = get_coordinates(coordinates_data)
 
     if about_data["period"] not in period_dict:
         data_dict["home_team_side"] = "NA-Shootout"
@@ -192,58 +198,61 @@ def get_goal_shots_by_season(season_year: int):
     @param season_year: The year for which we need to get the goal shots data
     @return: dataframe for the entire season.
     """
-    regular_data_path, playoffs_data_paths = get_json_path(season=season_year)
-    with open(regular_data_path, "r") as f:
-        regular_game_data_dict = json.load(f)
+    if os.path.exists(Directory.DATA_DIR + str(season_year) + os.path.sep + Directory.TIDY_DATA_PKL_FILENAME):
+        return pd.read_pickle(Directory.DATA_DIR + str(season_year) + os.path.sep + Directory.TIDY_DATA_PKL_FILENAME)
+    else:
 
-    with open(playoffs_data_paths, "r") as p:
-        playoffs_game_data_dict = json.load(p)
+        regular_data_path, playoffs_data_paths = get_json_path(season=season_year)
+        with open(regular_data_path, "r") as f:
+            regular_game_data_dict = json.load(f)
 
-    total_game_list = []
-    for key, val in tqdm(regular_game_data_dict.items()):
-        game_data = regular_game_data_dict[str(key)]
-        period_dict = get_side(game_meta=game_data)
-        teams_type = get_home_away_team(game_meta=game_data)
-        live_data = game_data["liveData"]["plays"]["allPlays"]
-        for i in live_data:
-            if i["result"]["event"] in TYPES_OF_SHOTS:
-                try:
-                    parsed_data = data_parsing(data=i, id=key, event_type=i["result"]["event"],
-                                               period_dict=period_dict, team_detail_dict=teams_type)
-                    total_game_list.append(parsed_data)
-                except Exception as e:
-                    print(key)
-                    print(e)
-                    import traceback
-                    print(traceback.print_exc())
-                    break
+        with open(playoffs_data_paths, "r") as p:
+            playoffs_game_data_dict = json.load(p)
 
-    for key, val in tqdm(playoffs_game_data_dict.items()):
-        game_data = playoffs_game_data_dict[str(key)]
-        period_dict = get_side(game_meta=game_data)
-        teams_type = get_home_away_team(game_meta=game_data)
-        live_data = game_data["liveData"]["plays"]["allPlays"]
-        for i in live_data:
-            if i["result"]["event"] in TYPES_OF_SHOTS:
-                try:
-                    parsed_data = data_parsing(data=i, id=key, event_type=i["result"]["event"],
-                                               period_dict=period_dict, team_detail_dict=teams_type)
-                    total_game_list.append(parsed_data)
-                except Exception as e:
-                    print(i)
-                    print(key)
-                    print(e)
-                    import traceback
-                    print(traceback.print_exc())
+        total_game_list = []
+        for key, val in tqdm(regular_game_data_dict.items()):
+            game_data = regular_game_data_dict[str(key)]
+            period_dict = get_side(game_meta=game_data)
+            teams_type = get_home_away_team(game_meta=game_data)
+            live_data = game_data["liveData"]["plays"]["allPlays"]
+            for i in live_data:
+                if i["result"]["event"] in TYPES_OF_SHOTS:
+                    try:
+                        parsed_data = data_parsing(data=i, id=key, event_type=i["result"]["event"],
+                                                   period_dict=period_dict, team_detail_dict=teams_type)
+                        total_game_list.append(parsed_data)
+                    except Exception as e:
+                        print(key)
+                        print(e)
+                        import traceback
+                        print(traceback.print_exc())
+                        break
 
-    shots_goals_df = pd.DataFrame(total_game_list)
-    shots_goals_df.to_pickle(Directory.DATA_DIR + str(season_year) + "/adv_vis.pkl")
-    return shots_goals_df
+        for key, val in tqdm(playoffs_game_data_dict.items()):
+            game_data = playoffs_game_data_dict[str(key)]
+            period_dict = get_side(game_meta=game_data)
+            teams_type = get_home_away_team(game_meta=game_data)
+            live_data = game_data["liveData"]["plays"]["allPlays"]
+            for i in live_data:
+                if i["result"]["event"] in TYPES_OF_SHOTS:
+                    try:
+                        parsed_data = data_parsing(data=i, id=key, event_type=i["result"]["event"],
+                                                   period_dict=period_dict, team_detail_dict=teams_type)
+                        total_game_list.append(parsed_data)
+                    except Exception as e:
+                        print(i)
+                        print(key)
+                        print(e)
+                        import traceback
+                        print(traceback.print_exc())
+
+        shots_goals_df = pd.DataFrame(total_game_list)
+        shots_goals_df.to_pickle(Directory.DATA_DIR + str(season_year) + os.path.sep + Directory.TIDY_DATA_PKL_FILENAME)
+        return shots_goals_df
 
 
 if __name__ == '__main__':
     # print(get_goal_shots_data_by_game_id(game_id=2018020963).head())
-    # print(get_goal_shots_data_by_game_id(game_id=2017020510).head())
     year = [2016, 2017, 2018, 2019, 2020]
     for y in year:
-        print(get_goal_shots_by_season(season_year=y).head())
+        get_goal_shots_by_season(season_year=y).head()
