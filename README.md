@@ -248,6 +248,7 @@ In this project as of now we have used two APIs which was provided by NHL,
 <summary>Season 2016-2017 Comparison </summary>
      <h4>Insights</h4>
      To be added here. 
+     <br>
      <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png" width="325">
      <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png" width="325"> 
 </details>
