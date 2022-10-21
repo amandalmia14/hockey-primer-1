@@ -73,6 +73,14 @@ well as show and finally permit advanced data visualisations.
   [here](https://gitlab.com/dword4/nhlapi)
 - Run the python script which resides at `modules/dataextraction/data_extraction.py`, this script will fetch the data 
 of the seasons starting from 2016 to 2020.
+- This will create a folder in your directory for the season which you want to download and two json files will be 
+appeared along with some other files which will be used later part of the project.  
+  - `YYYY_regular_season.json`
+  - `YYYY_playoffs.json`
+  
+  <br>
+  <img src="figures/data_download.png" width="200"/>
+  <br>
 
 ## Run Interactive Debugging Tool
 - Run the `jupyter notebook` locally inside the project folder
