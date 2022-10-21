@@ -4,3 +4,5 @@ numpy
 jupyter
 tqdm
 matplotlib
+scipy
+plotly
