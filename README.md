@@ -52,7 +52,7 @@ well as show and finally permit advanced data visualisations.
 
 ## Setting up Environment
 
-- Git clone the [repository](git@github.com:amandalmia14/hockey-primer-1.git)
+- Git clone the [repository](https://github.com/amandalmia14/hockey-primer-1)
 - Make sure Python is installed on the system
 - Create a virtual environment / conda environment
 
