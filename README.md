@@ -193,7 +193,7 @@ In this project as of now we have used two APIs which was provided by NHL,
 </details>
 
 <details>
-<summary>Goals By Season for the season 2020</summary>
+<summary>Proportion of goal by distance for seasons 2018, 2019, 2020</summary>
      <h4>Insights</h4>
      The proportion of goals over all shots increases overall exponentially as the distance diminishes, with a maximum 
      proportion of goals >25% when goals are shot at less than 5 feet from the goal. We also note a small, local maximum
@@ -205,7 +205,7 @@ In this project as of now we have used two APIs which was provided by NHL,
 </details>
 
 <details>
-<summary>Goals By Distance and Shot type for the season 2017</summary>
+<summary>Proportion of goal by distance and shot type</summary>
      <h4>Insights</h4>
      We chose this figure after having considered and visualized different types of figures. First, we visualized 
      violin plots of the distribution of goals and missed shots; however, these did not intuitively represent the 
