@@ -16,6 +16,7 @@ Table of contents
 * [Installation](#installation)
     * [Setup Environment](#setup-environment)
     * [Install Dependencies](#install-dependencies)
+* [Usage](#usage)
     * [Download Data](#download-data)
 * [Project Structure](#project-structure)
 
@@ -61,12 +62,32 @@ well as show and finally permit advanced data visualisations.
 - Activate the environment and run `pip install -r requirement.txt` this will download all the dependencies related to
   this project.
 
-## Download Data
+# Usage
 
+## Download Data
 - The data for the NHL games are exposed out in the form of various APIs, the details of the APIs can be found over
   [here](https://gitlab.com/dword4/nhlapi)
-- Run the python script which resides at `modules/data_extraction.py`, this script will fetch the data of the seasons
-  starting from 2016 to 2020.
+- Run the python script which resides at `modules/dataextraction/data_extraction.py`, this script will fetch the data 
+of the seasons starting from 2016 to 2020.
+
+## Running Interactive Debugging Tool
+- Run the `jupyter notebook` locally inside the project folder
+- Navigate to the `notebook` folder 
+- Run `3_interactive_debugging_tool.ipynb` file
+
+## Creating Tidy Data for Visualisation
+- Run the python script which resides at `modules/dataretrival/data_retrival.py`, this script will creates the tidy data 
+and save the data into a pickle file for all the seasons starting from 2016 to 2020.
+
+## Running Simple Visualisation
+- Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
+- Navigate to the `notebook` folder 
+- Run `4_simple_visualizations.ipynb` file
+
+## Running Advance Visualisation
+- Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
+- Navigate to the `notebook` folder 
+- Run `7_interactive_figure.ipynb` file
 
 # Project Structure
 
@@ -74,6 +95,7 @@ As seen in the above image, the project is divided into various parts,
 
 - `data` - It contains all the NHL tournament data season wise, in each season we have two json files of regular season
   games and playoffs.
+- `figures` - It contains all the data insights which we captured in this project. 
 - `modules` - For every action which we are performing in this project, are captured as modules, like data
   extractions, data retrieval (data parsing)
 - `notebooks` - For all kinds of visualisations, insights of the data can be accessed through the notebooks.
@@ -211,16 +233,17 @@ In this project as of now we have used two APIs which was provided by NHL,
 <summary>Goals By Distance and Shot type for the season 2017</summary>
      <h4>Insights</h4>
      To be added here. 
-     <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png"/>
+     <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png">
 </details>
 
 ## Advance Visualisations
 
 <details>
-<summary>Details</summary>
+<summary>Season 2016-2017 Comparison </summary>
      <h4>Insights</h4>
      To be added here. 
-     <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png"/>
+     <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png" width="100">
+     <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png" width="100"> 
 </details>
 
 # Conclusion
