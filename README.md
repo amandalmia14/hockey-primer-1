@@ -159,9 +159,8 @@ We would be interested in studying the impact of tackling and hitting on the cha
 ## Interactive Debugging Tool
 
 <details>
-<summary>Goals By Season for the season 2020</summary>
-     <h4>Insights</h4>
-     To be added here. 
+<summary>Event locations</summary>
+     <h4>Visualize coordinates of events, by regular season or playoffs</h4>
      <img src="figures/idt.png"/>
 </details>
 
@@ -193,7 +192,7 @@ We would be interested in studying the impact of tackling and hitting on the cha
      <h4>Insights</h4>
      The proportion of goals over all shots increases overall exponentially as the distance diminishes, with a maximum 
      proportion of goals >25% when goals are shot at less than 5 feet from the goal. We also note a small, local maximum
-     at 75 to 80 feet. This distribution did not increase significantly for seasons 2018-19 to 2020-21. This local 
+     at 75 to 80 feet. This distribution did not change significantly for seasons 2018-19 to 2020-21. This local 
      maximum could suggest that there is another variable (e.g. shot type or other) that could underlie this 
      distribution. 
      <br>
