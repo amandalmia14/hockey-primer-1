@@ -28,7 +28,7 @@ Table of contents
     * [Data Extractions](#data-extractions)
     * [Interactive Debugging Tool](#interactive-debugging-tool)
     * [Simple Visualisation](#simple-visualisations)
-    * [Advance Visualisation](#advance-visualisations)
+    * [Advanced Visualisation](#advanced-visualisations)
 
 * [Conclusion](#conclusion)
 * [Authors](#authors)
