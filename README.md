@@ -134,12 +134,12 @@ In this project as of now we have used two APIs which was provided by NHL,
 
 ## Data Extractions
 
-<summary>Tidy Data</summary>
      <h4>Insights</h4>
      There is too much information available from the NHL API at this moment. Not all information are useful, based 
      on the project we take the relevant data out from the nested json and create a single tabular structure aka
      Dataframe. Below is a glimpse of the tidy data which we had published for further data analysis.
 
+<summary>Tidy Data</summary>
 <details>
 <img src="figures/df.png">
 </details>
@@ -232,7 +232,7 @@ We would be interested in studying the impact of tackling and hitting on the cha
      <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png">
 </details>
 
-## Advance Visualisations
+## Advanced Visualisations
 
 <details>
 <summary>Comparison of Colorado Avalanche avg shots between season 2016-2017 and 2020-2021  </summary>
@@ -275,7 +275,7 @@ To be added
 
 **Mohsen Dehghani:** Master’s degree in Optimization 2010-2013 and student of DESS in Machin learning at MILA 2022-2023. I start a master’s degree in Machin learning at MILA 2022-2023 love to show how to apply theoretical mathematical knowledge to real-life problems by using computer languages such as Java or Python.
 
-**Raphael Bourque:** Training in Psychiatry (medicine) and master degree in Computational Medicine
+**Raphael Bourque:** Graduated from Medicine, presently doing residency training in Psychiatry and at the Clinician Investigator Program, and studying at the MSc in Computationnal Medicine. My current research work is in Genetics, and I am very interested in the applications of data science and machine learning to evidence-based medical practice.  
 
 **Vaibhav Jade:** First year student of MSc. Computer Science at UdeM. 
 
