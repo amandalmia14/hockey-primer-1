@@ -37,21 +37,14 @@ Table of contents
 
 # Introduction
 
-The National Hockey League (NHL; French: Ligue nationale de hockey—LNH) is a professional ice hockey league in North
-America comprising 32 teams—25 in the United States and 7 in Canada. It is considered to be the top ranked professional
-ice hockey league in the world, and is one of the major professional sports leagues in the United States and Canada.
-The Stanley Cup, the oldest professional sports trophy in North America,is awarded annually to the league playoff
-champion at the end of each season. The NHL is the fifth-wealthiest professional sport league in the world by revenue,
-after the National Football League (NFL), Major League Baseball (MLB), the National Basketball Association (NBA), and
-the English Premier League [EPL](https://en.wikipedia.org/wiki/National_Hockey_League)
+The National Hockey League (NHL) is a professional ice hockey league in North America. It comprises a total of 32 teams, of which 7 in Canada [EPL](https://en.wikipedia.org/wiki/National_Hockey_League), including the Montreal Canadien. Each year, the Stanley Cup playoffs selects the best team, which is awarded the Stanley Cup for the season. For example, The Montreal Canadien won the Stanley Cup 24 for 24 seasons, the last time in 1992-1993. 
+
+The NHL makes publically available an API that features statistics including meta-data on each season, season standings, player statistics by season, and play-by-play data. This last format of data is the most thorough and it features important information for all events during each game, such as the players involved, location coordinates on the ice, and the type of event. The NHL API is a valuable source of fine-grained sports data that can be used in a number of tasks such as finding the features that predict goals, or those that predict players salaries. 
+
 
 ## Motivation
 
-The purpose of this project is to provide a Python API for accessing NHL game data including plays by plays
-information such as game summaries, player stats and play-by-play visualizations. They’re all lots good information
-that is hides on NHL API website scraping process regarding the outputs. In this project we are trying to show all NHL
-analytics we could like to seek from NHL API. Our package can extract let’s say all most the game summary report as
-well as show and finally permit advanced data visualisations.
+The purpose of this project is to provide a Python API for accessing NHL data, specifically, all the play-by-play informations. The reader will learn here how to download the NHL data for a given year, how to first visualize it, and then how to format it into a tidy data frame. This tidy data format will then be used for producing simple, as well as more advanced, interactive visualizations. At term, this data could also be used for a number of purpuses including machine learning, or other tasks at the reader's will. 
 
 # Installation
 
@@ -115,7 +108,7 @@ As seen in the above image, the project is divided into various parts,
 
 # Data APIs
 
-In this project as of now we have used two APIs which was provided by NHL,
+This project uses two APIs which were provided by the NHL : 
 
 - `GET_ALL_MATCHES_FOR_A_GIVEN_SEASON = "https://statsapi.web.nhl.com/api/v1/schedule?season=XXXX"`
     - This API fetch all the matches metadata for a given input season, using this API we are getting the map of
@@ -134,20 +127,17 @@ In this project as of now we have used two APIs which was provided by NHL,
 
 ## Data Extractions
 
-     <h4>Insights</h4>
-     There is too much information available from the NHL API at this moment. Not all information are useful, based 
-     on the project we take the relevant data out from the nested json and create a single tabular structure aka
-     Dataframe. Below is a glimpse of the tidy data which we had published for further data analysis.
+The data available by the NHL API needs to be parsed and formatted in order to make more advanced data usages possible. In this regard, we select the relevant data out from the nested dictionnaries from the json file, and and we format a single tabular structure, i.e. 
+ a dataframe. Below is a glimpse of the tidy dataframe which will be used in further analyses. 
 
-<summary>Tidy Data</summary>
 <details>
+<summary>Tidy Data</summary>
 <img src="figures/df.png">
 </details>
 
 <h3>How to get the number of players in each team</h3> 
-We would first format a tidy dataframe that includes all types of events, with events as rows and including datetime, eventType,
-periodType, penaltySeverity, penaltyMinutes, and team, as columns. The events would to be sorted in order of their occurrence in time during the game (datetime).
-We would create an empty (np.nan) column for the number of players on ice, and then program a loop to iterate over all event, while concatenating a list of player counts for each time, n_1 and n_2. At the beginning of the loop, and at the beginning of each period
+The first step would be to format a new tidy dataframe which would includes all types of events (not only the shots and goals, such as in the dataframe featured above), with events as rows and including datetime, eventType, periodType, penaltySeverity, penaltyMinutes, and team, as columns. The events would to be sorted in order of their occurrence in time during the game (datetime).
+We would then create an empty (np.nan) column for the number of players on ice, and program a loop to iterate over all event, while concatenating a list of player counts for each time, n_1 and n_2. At the beginning of the loop, and at the beginning of each period
 (each time the period of the event is not the same as the previous event), we re-initiate the parameters: n_1 = 6 (number of players in first team, including the goalie), n_2 = 6 (number of players in second team, including the goalie).
 Eight parameters would be set: penalty_player_A_team_1=None, end_time_of_penalty_for_player_A_team_1 = Datetime penalty_player_B_team_1 = None, and end_time_of_penalty_for_player_B_team_1=Datetime (as there can be a maximum of 2 players in penalty at the same time);and the four equivalent parameters for team 2. 
 Then, as the loop iterater over all events, each time the eventTypeId == "PENALTY", if "penaltySeverity": "Minor" or "DoubleMinor", the number of player in the team involved in the penalty (Team of the player that is penalized) would be substracted 1, the penalty_player would be set to the name the penalized player, and end_time_of_penalty parameter would be set to DateTime + penaltyMinutes. For subsequent events, as long as the penalty_player is not None, the datetime of the event would be compared to end_time_of_penalty, untill datetime > end_time_of_penalty and then the number of player for that team would be added +1, as the player is back on ice.
@@ -226,8 +216,8 @@ We would be interested in studying the impact of tackling and hitting on the cha
      distribution of all shots at the previous figure.
      <br>
      Finally, the curves are somewhat irregular, and adding more data (e.g. averaging through a few years) could add 
-     more smoothness in the results. Note that to have more smoothed curves and remove outliers, we did not plot the 
-     points for which we had less than 10 total observations for that type of shot and at that distance in that season.
+     more smoothness in the results. Note that to have more smoothed curves and remove outliers which made interpretations difficult, we did not plot the 
+     points for which we had less than 10 total observations for that type of shot and at that distance in that season. 
      <br>
      <img src="figures/figure_3_goals_by_distance_and_shot_type2017.png">
 </details>
@@ -266,18 +256,18 @@ We would be interested in studying the impact of tackling and hitting on the cha
 
 # Conclusion
 
-To be added
+The present project is a good example of how sports data can be obtained from a publically available API, and made into a data format that can be used for advanced, interactive visualizations. Some limitations of the present work include that the conclusions drawn here from the data are based solely on data visualizations, and not yet on thorough predictive modelling. Further work could focus on using the formatted data for tasks such as feature selection and machine learning. 
 
 # Authors
+
+**Vaibhav Jade:** First year student of MSc. Computer Science at UdeM. 
+
+**Mohsen Dehghani:** Master’s degree in Optimization 2010-2013 and student of DESS in Machin learning at MILA 2022-2023. I start a master’s degree in Machin learning at MILA 2022-2023 love to show how to apply theoretical mathematical knowledge to real-life problems by using computer languages such as Java or Python.
 
 **Aman Dalmia:** First year student of MSc. Computer Science at UdeM, have an interest in Information Retrieval and Natural Language Processing. <br>
   *“Don’t create a problem statement for an available solution, rather work towards a solution for a given problem”*
 
-**Mohsen Dehghani:** Master’s degree in Optimization 2010-2013 and student of DESS in Machin learning at MILA 2022-2023. I start a master’s degree in Machin learning at MILA 2022-2023 love to show how to apply theoretical mathematical knowledge to real-life problems by using computer languages such as Java or Python.
-
-**Raphael Bourque:** Graduated from Medicine, presently doing residency training in Psychiatry and at the Clinician Investigator Program, and studying at the MSc in Computationnal Medicine. My current research work is in Genetics, and I am very interested in the applications of data science and machine learning to evidence-based medical practice.  
-
-**Vaibhav Jade:** First year student of MSc. Computer Science at UdeM. 
+**Raphaël Bourque:** Graduated from Medicine, presently doing residency training in Psychiatry and at the Clinician Investigator Program, and studying at the MSc in Computationnal Medicine. My current research work is in Genetics (CHU Sainte-Justine), and I am very interested in the applications of data science and machine learning to evidence-based medical practice.  
 
 *(Names are in ascending order)*
 
