@@ -134,30 +134,17 @@ In this project as of now we have used two APIs which was provided by NHL,
 
 ## Data Extractions
 
-     ```
-     TODO
-     Discuss how you could add the actual strength information (i.e. 5 on 4, etc.) to both shots and goals, given the 
-     other event types (beyond just shots and goals) and features available.
-     Ans: 
-
-     In a few sentences, discuss at least 3 additional features you could consider creating from the data available in 
-     this dataset. We’re not looking for any particular answers, but if you need some inspiration, could a shot or 
-     goal be classified as a rebound/shot off the rush (explain how you’d determine these!)
-    
-    - We can classify a shot as a rebound shot or not based on the timing on the previous shot. 
-    - Based on the given even shot of the player, how likely the shot can be a goal
-    - 
-    
-     ```
-
-<details>
 <summary>Tidy Data</summary>
      <h4>Insights</h4>
      There is too much information available from the NHL API at this moment. Not all information are useful, based 
      on the project we take the relevant data out from the nested json and create a single tabular structure aka
      Dataframe. Below is a glimpse of the tidy data which we had published for further data analysis.
-     <h3>How to get the number of players in each team</h3>
 
+<details>
+<img src="figures/df.png">
+</details>
+
+<h3>How to get the number of players in each team</h3> 
 We would first format a tidy dataframe that includes all types of events, with events as rows and including datetime, eventType,
 periodType, penaltySeverity, penaltyMinutes, and team, as columns. The events would to be sorted in order of their occurrence in time during the game (datetime).
 We would create an empty (np.nan) column for the number of players on ice, and then program a loop to iterate over all event, while concatenating a list of player counts for each time, n_1 and n_2. At the beginning of the loop, and at the beginning of each period
@@ -171,9 +158,6 @@ We would be interested in studying the impact of tackling and hitting on the cha
 (1) We would first extract, for each shot event, variables at team-level that corresponds to the time (in minutes) between the shot and the last time a player of the team on which the shot was taken was hit. This would be done by iterating through all events in chronological order, initiating the time at as NaN at the beginning of each period, and updating the time at each time a hit happens, for each team. This would result in variables: time_since_last_hit_team_1 and time_since_last_hit_team_2. 
 (2) Additionally, during the same iteration process, we would update four boolean variables with player-level information to note whether the hitter and the hittee from the last hit event were among the player involved in the shot (shooter, goalie or assist). This would result in variables: hitter_involved_team_1, hittee_involved_team_1, hitter_involved_team_2, hittee_involved_team_2. 
 (3) Finally, to study the relationship between goals and the total number of hits in a game, we would extract 4 variables, during the same iteration process as above. These variables would be initiated at 0 at the beginning of the game, and updated at each hit event for each team and type of player involved (hitter or hittee). This would result in variables: n_hitter_team_1, n_hittee_team_1, n_hitter_team_2, n_hittee_team_2.
-
-<img src="figures/df.png">
-</details>
 
 ## Interactive Debugging Tool
 
