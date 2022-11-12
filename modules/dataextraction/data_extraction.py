@@ -111,7 +111,7 @@ def get_all_data_by_season(year: int, out_path: str):
     @return:None
     """
     try:
-        if 2015 < year < 2021:
+        if 2014 < year < 2021:
             if exists(Directory.DATA_DIR + out_path):
                 print("Data exists locally, fetching the data from your system !!")
                 regular_season_file_path = Directory.DATA_DIR + out_path + os.path.sep + str(year) \
@@ -130,28 +130,28 @@ def get_all_data_by_season(year: int, out_path: str):
                 reg_season_game_data_dict = {}
                 playoffs_game_data_dict = {}
                 reg_season_gameid_list, playoffs_gameid_list = get_all_relevant_game_ids_by_season(season_year=year)
+                print("Starting Data extraction for the season ", year)
                 for reg_season_game_id in tqdm(reg_season_gameid_list):
                     match_data = get_data_by_gameid(game_id=reg_season_game_id)
                     reg_season_game_data_dict[reg_season_game_id] = match_data
                 for playoff_game_id in tqdm(playoffs_gameid_list):
                     match_data = get_data_by_gameid(game_id=playoff_game_id)
                     playoffs_game_data_dict[playoff_game_id] = match_data
-
+                print("Please wait !! Data is persisting into file ")
                 save_data_to_json(year=year, game_type="regular_season", data=reg_season_game_data_dict,
                                   save_path=out_path)
                 save_data_to_json(year=year, game_type="playoffs", data=playoffs_game_data_dict,
                                   save_path=out_path)
-
+                print("Completed for the season ", year)
                 return reg_season_game_data_dict, playoffs_game_data_dict, "Success"
         else:
             return {}, {}, "Invalid Year"
     except Exception as e:
         print(e)
         print(traceback.print_exc())
-        pass
 
 
 if __name__ == "__main__":
-    year = [2016, 2017, 2018, 2019, 2020]
+    year = [2015, 2016, 2017, 2018, 2019, 2020]
     for y in year:
         results = get_all_data_by_season(year=y, out_path=str(y))
