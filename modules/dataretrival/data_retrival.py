@@ -1,6 +1,7 @@
 import json
 import os
 
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
@@ -102,7 +103,24 @@ def get_coordinates(coordinates_data):
     return coordinates_data["x"], coordinates_data["y"]
 
 
-def data_parsing(data, id, event_type, period_dict, team_detail_dict):
+def last_data_parsing(data):
+    """
+    This function will take the data of the previous event and return a new dict which contains certain data which will
+    require to append the data as a previous event details for the next event.
+    :param data: previous data event
+    :return: relevant details of the previous event
+    """
+    result_data = data["result"]
+    about_data = data["about"]
+    data_dict = {"event_code": result_data["eventCode"], "event_type_id": result_data["eventTypeId"],
+                 "coordinates": get_coordinates(data["coordinates"]),
+                 "about_period": about_data["period"], "game_time": about_data["periodTime"]
+                 }
+
+    return data_dict
+
+
+def data_parsing(data, id, event_type, period_dict, team_detail_dict, last_event_data):
     """
     This functions transforms the json data into the relevant information for the usecase
     @param data: entire metadata and details of the given game id
@@ -129,6 +147,19 @@ def data_parsing(data, id, event_type, period_dict, team_detail_dict):
                  "about_time_remaining": about_data["periodTimeRemaining"], "about_date_time": about_data["dateTime"],
                  "about_goal_away": about_data["goals"]["away"], "about_goal_home": about_data["goals"]["home"],
                  "action_team_name": team_data["name"]}
+
+    if last_event_data is not None:
+        data_dict["last_event_code"] = last_event_data['event_code']
+        data_dict["last_event_type_id"] = last_event_data['event_type_id']
+        data_dict["last_event_coordinates"] = last_event_data["coordinates"]
+        data_dict["last_event_time"] = last_event_data["game_time"]
+        data_dict["last_event_period"] = last_event_data["about_period"]
+    else:
+        data_dict["last_event_id"] = np.nan
+        data_dict["last_event_type"] = np.nan
+        data_dict["last_event_coordinates"] = np.nan
+        data_dict["last_event_time"] = np.nan
+        data_dict["last_event_period"] = np.nan
 
     if "secondaryType" not in result_data:
         data_dict["event_secondary_type"] = "NA"
@@ -192,16 +223,17 @@ def get_goal_shots_data_by_game_id(game_id: int):
     return shots_goals_df
 
 
-def get_goal_shots_by_season(season_year: int):
+def get_goal_shots_by_season(season_year: int, reprocess_data: bool):
     """
     This functions get the goals and shorts data by the given input season
     @param season_year: The year for which we need to get the goal shots data
     @return: dataframe for the entire season.
+    :param reprocess_data: a flag which will allow to reprocess the data or not.
     """
-    if os.path.exists(Directory.DATA_DIR + str(season_year) + os.path.sep + Directory.TIDY_DATA_PKL_FILENAME):
+    if not reprocess_data and os.path.exists(Directory.DATA_DIR + str(season_year) + os.path.sep +
+                                             Directory.TIDY_DATA_PKL_FILENAME):
         return pd.read_pickle(Directory.DATA_DIR + str(season_year) + os.path.sep + Directory.TIDY_DATA_PKL_FILENAME)
     else:
-
         regular_data_path, playoffs_data_paths = get_json_path(season=season_year)
         with open(regular_data_path, "r") as f:
             regular_game_data_dict = json.load(f)
@@ -215,11 +247,14 @@ def get_goal_shots_by_season(season_year: int):
             period_dict = get_side(game_meta=game_data)
             teams_type = get_home_away_team(game_meta=game_data)
             live_data = game_data["liveData"]["plays"]["allPlays"]
+            last_event = None
             for i in live_data:
                 if i["result"]["event"] in TYPES_OF_SHOTS:
                     try:
+                        last_event_data = last_data_parsing(last_event)
                         parsed_data = data_parsing(data=i, id=key, event_type=i["result"]["event"],
-                                                   period_dict=period_dict, team_detail_dict=teams_type)
+                                                   period_dict=period_dict, team_detail_dict=teams_type,
+                                                   last_event_data=last_event_data)
                         total_game_list.append(parsed_data)
                     except Exception as e:
                         print(key)
@@ -227,17 +262,21 @@ def get_goal_shots_by_season(season_year: int):
                         import traceback
                         print(traceback.print_exc())
                         break
+                last_event = i
 
         for key, val in tqdm(playoffs_game_data_dict.items()):
             game_data = playoffs_game_data_dict[str(key)]
             period_dict = get_side(game_meta=game_data)
             teams_type = get_home_away_team(game_meta=game_data)
             live_data = game_data["liveData"]["plays"]["allPlays"]
+            last_event = None
             for i in live_data:
                 if i["result"]["event"] in TYPES_OF_SHOTS:
                     try:
+                        last_event_data = last_data_parsing(last_event)
                         parsed_data = data_parsing(data=i, id=key, event_type=i["result"]["event"],
-                                                   period_dict=period_dict, team_detail_dict=teams_type)
+                                                   period_dict=period_dict, team_detail_dict=teams_type,
+                                                   last_event_data=last_event_data)
                         total_game_list.append(parsed_data)
                     except Exception as e:
                         print(i)
@@ -245,7 +284,7 @@ def get_goal_shots_by_season(season_year: int):
                         print(e)
                         import traceback
                         print(traceback.print_exc())
-
+                last_event = i
         shots_goals_df = pd.DataFrame(total_game_list)
         shots_goals_df.to_pickle(Directory.DATA_DIR + str(season_year) + os.path.sep + Directory.TIDY_DATA_PKL_FILENAME)
         return shots_goals_df
@@ -253,6 +292,10 @@ def get_goal_shots_by_season(season_year: int):
 
 if __name__ == '__main__':
     # print(get_goal_shots_data_by_game_id(game_id=2018020963).head())
-    year = [2016, 2017, 2018, 2019, 2020]
+    year = [2015, 2016, 2017, 2018, 2019, 2020]
+    list_df = []
+    reprocess_data_flag = True
     for y in year:
-        get_goal_shots_by_season(season_year=y).head()
+        list_df.append(get_goal_shots_by_season(season_year=y, reprocess_data=reprocess_data_flag))
+    final_df = pd.concat(list_df)
+    final_df.to_pickle(Directory.ALL_SEASON_DATA_PKL_FILE)
