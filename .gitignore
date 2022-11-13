@@ -28,6 +28,9 @@ var/
 *.manifest
 *.spec
 
+# Config files
+configfile.ini
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
