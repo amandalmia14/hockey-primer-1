@@ -26,7 +26,7 @@ np.random.seed(42)
 config = configparser.ConfigParser()
 # config.read('../configfile.ini')
 config.read(COMET_FILE)
-type_env = "comet_ml_dev"  # comet_ml_prod
+type_env = "comet_ml_prod"  # comet_ml_prod
 COMET_API_KEY = config[type_env]['api_key']
 COMET_PROJECT_NAME = config[type_env]['project_name_baseline']
 COMET_WORKSPACE = config[type_env]['workspace']
@@ -37,7 +37,7 @@ comet_exp_obj = Experiment(api_key=COMET_API_KEY,
                            log_code=True
                            )
 comet_exp_obj.set_name(name="Baseline Models")
-comet_exp_obj.log_notebook("9_baseline_models_all.ipynb")
+comet_exp_obj.log_notebook("q3_baseline_models_all.py")
 
 
 # In[3]:
