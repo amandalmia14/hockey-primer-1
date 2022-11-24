@@ -35,7 +35,7 @@ config = configparser.ConfigParser()
 config.read(COMET_FILE)
 type_env = "comet_ml_prod"  # comet_ml_prod
 COMET_API_KEY = config[type_env]['api_key']
-COMET_PROJECT_NAME_PLAYOFFS = config[type_env]['project_name_final_test_playoffs']
+COMET_PROJECT_NAME_REGULAR = config[type_env]['project_name_final_test_regular']
 COMET_WORKSPACE = config[type_env]['workspace']
 DOWNLOADED_MODEL_PATH = "../../downloaded_models/"
 
@@ -98,11 +98,12 @@ def load_test_data():
     df = pd.read_pickle("../../data/testdata/final_evaluation_set.pkl")
     x_test = df
     x_test["game_type"] = np.where(x_test["game_id"].str[5] == "2", 'regular', 'playoffs')
-    x_test = x_test[x_test["game_type"] == "playoffs"]
+    x_test = x_test[x_test["game_type"] == "regular"]
     y_test = x_test["is_goal"].values
-    x_test = x_test[
-        ['angle', 'distance_from_last_event', 'empty_net', 'shot_type_Wrap-around', 'y_coordinate', 'speed', 'distance',
-         'x_coordinate', 'game_period', 'shot_type_Tip-In', 'shot_type_Wrist Shot', 'game_seconds']]
+
+    x_test = x_test[['angle', 'distance_from_last_event', 'empty_net', 'shot_type_Wrap-around',
+                     'y_coordinate', 'speed', 'distance', 'x_coordinate', 'game_period', 'shot_type_Tip-In',
+                     'shot_type_Wrist Shot', 'game_seconds']]
 
     x_test = (x_test - x_test.mean()) / x_test.std()
 
@@ -134,7 +135,7 @@ download_models()
 
 
 comet_exp_obj = Experiment(api_key=COMET_API_KEY,
-                           project_name=COMET_PROJECT_NAME_PLAYOFFS,
+                           project_name=COMET_PROJECT_NAME_REGULAR,
                            workspace=COMET_WORKSPACE,
                            log_code=True
                            )
@@ -266,7 +267,6 @@ def create_roc_auc_curve(dataloader, x_val, y_val, k):
         pass
 
     metrics = {}
-
     predicted_probablities = pred_list
     goal_prob = predicted_probablities[:, 1]  # taking only the goal probablities
     # https://machinelearningmastery.com/roc-curves-and-precision-recall-curves-for-classification-in-python/
@@ -327,10 +327,10 @@ plt.text(0.8, 0.75, 'Table ROC AUC', size=8)
 plt.plot(ns_fpr, ns_tpr, linestyle='--', label='Base Line')
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
-plt.title("Receiver Operating Characteristic (ROC) curves and the AUC metric for playoffs games")
+plt.title("Receiver Operating Characteristic (ROC) curves and the AUC metric for regular games")
 plt.legend()
 comet_exp_obj.log_figure(
-    figure_name="Receiver Operating Characteristic (ROC) curves and the AUC metric for playoffs games",
+    figure_name="Receiver Operating Characteristic (ROC) curves and the AUC metric for regular games",
     figure=plt, overwrite=True, step=None)
 plt.show()
 
@@ -428,9 +428,9 @@ plt1.invert_xaxis()
 plt1.set_xlabel('Shot probablity model percentile')
 plt1.set_ylabel('Goals / (No Goals + Goals)')
 plt.grid()
-plt.title("Goal Rate for playoffs games")
+plt.title("Goal Rate for regular games")
 plt.legend()
-comet_exp_obj.log_figure(figure_name="Goal Rate for playoffs games", figure=fig,
+comet_exp_obj.log_figure(figure_name="Goal Rate for regular games", figure=fig,
                          overwrite=True, step=None)
 plt.show()
 
@@ -532,9 +532,9 @@ plt1.invert_xaxis()
 plt1.set_xlabel('Shot probablity model percentile')
 plt1.set_ylabel('Proportion')
 plt.grid()
-plt.title("Cumulative % of goals for playoffs games")
+plt.title("Cumulative % of goals for regular games")
 plt.legend()
-comet_exp_obj.log_figure(figure_name="Cumulative % of goals for playoffs games", figure=plt,
+comet_exp_obj.log_figure(figure_name="Cumulative % of goals for regular games", figure=plt,
                          overwrite=True, step=None)
 
 plt.show()
@@ -623,11 +623,11 @@ for index, (k, v) in enumerate(data_dict.items()):
     calibration_displays[k] = create_estimator_plot(valdataloader, x_val, y_val, k)
 
 ax_calibration_curve.grid()
-ax_calibration_curve.set_title("Calibration plots for playoffs games")
+ax_calibration_curve.set_title("Calibration plots for regular games")
 plt.tight_layout()
 plt.legend(loc='upper left')
 
-comet_exp_obj.log_figure(figure_name="Calibration Display for playoffs games", figure=plt,
+comet_exp_obj.log_figure(figure_name="Calibration Display for regular games", figure=plt,
                          overwrite=True, step=None)
 plt.show()
 

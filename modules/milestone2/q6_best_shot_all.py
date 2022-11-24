@@ -71,10 +71,10 @@ def load_datafile():
     y_train = pd.read_pickle("../../data/trainvaldata/y_train.pkl")
     y_val = pd.read_pickle("../../data/trainvaldata/y_val.pkl")
 
-    comet_exp_obj.log_dataframe_profile(x_train, "x_train")
-    comet_exp_obj.log_dataframe_profile(y_train, "y_train")
-    comet_exp_obj.log_dataframe_profile(x_val, "x_val")
-    comet_exp_obj.log_dataframe_profile(y_val, "y_val")
+    comet_exp_obj.log_dataframe_profile(x_train, "x_train", dataframe_format="csv")
+    comet_exp_obj.log_dataframe_profile(y_train, "y_train", dataframe_format="csv")
+    comet_exp_obj.log_dataframe_profile(x_val, "x_val", dataframe_format="csv")
+    comet_exp_obj.log_dataframe_profile(y_val, "y_val", dataframe_format="csv")
 
     x_train = x_train[
         ['angle', 'distance_from_last_event', 'empty_net', 'shot_type_Wrap-around', 'y_coordinate', 'speed', 'distance',
