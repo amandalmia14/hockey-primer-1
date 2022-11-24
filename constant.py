@@ -26,5 +26,6 @@ class CustomRegex():
 
 
 TYPES_OF_SHOTS = ["Goal", "Shot"]
+COMET_FILE = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + "configfile.ini"
 
 
