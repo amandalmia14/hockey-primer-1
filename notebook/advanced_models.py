@@ -108,7 +108,7 @@ elif model_code == 1:
         }
 
     model = XGBClassifier(random_state=42,scale_pos_weight = cw)
-    grid1 = GridSearchCV(estimator=model,param_grid = params, scoring='roc_auc',cv=3,return_train_score=True)
+    grid1 = GridSearchCV(estimator=model,param_grid = params, scoring='f1',cv=3,return_train_score=True)
     grid1.fit(x_train.to_numpy(),y_train.to_numpy())
     results = grid1.cv_results_
     grid1.fit(x_train.to_numpy(),y_train.to_numpy())
@@ -138,7 +138,7 @@ elif model_code == 2:
         }
 
     model = XGBClassifier(random_state=42,scale_pos_weight = cw)
-    grid3 = GridSearchCV(estimator=model,param_grid = params, scoring='roc_auc',cv=3,return_train_score=True)
+    grid3 = GridSearchCV(estimator=model,param_grid = params, scoring='f1',cv=3,return_train_score=True)
     grid3.fit(x_train[fs].to_numpy(),y_train.to_numpy())
     results = grid3.cv_results_
 
