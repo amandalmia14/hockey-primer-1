@@ -37,7 +37,7 @@ comet_exp_obj = Experiment(api_key=COMET_API_KEY,
                            log_code=True
                            )
 comet_exp_obj.set_name(name="Baseline Models")
-comet_exp_obj.log_notebook("q3_baseline_models_all.py")
+# comet_exp_obj.log_notebook("q3_baseline_models_all.py")
 
 
 # In[3]:
@@ -77,10 +77,10 @@ x_val = pd.read_pickle("../../data/trainvaldata/x_val.pkl")
 y_train = pd.read_pickle("../../data/trainvaldata/y_train.pkl")
 y_val = pd.read_pickle("../../data/trainvaldata/y_val.pkl")
 
-comet_exp_obj.log_dataframe_profile(x_train, "x_train")
-comet_exp_obj.log_dataframe_profile(y_train, "y_train")
-comet_exp_obj.log_dataframe_profile(x_val, "x_val")
-comet_exp_obj.log_dataframe_profile(y_val, "y_val")
+comet_exp_obj.log_dataframe_profile(x_train, "x_train", dataframe_format="csv")
+comet_exp_obj.log_dataframe_profile(y_train, "y_train", dataframe_format="csv")
+comet_exp_obj.log_dataframe_profile(x_val, "x_val", dataframe_format="csv")
+comet_exp_obj.log_dataframe_profile(y_val, "y_val", dataframe_format="csv")
 
 x_train_df_distance = x_train[['distance']]
 x_train_df_angle = x_train[['angle']]
