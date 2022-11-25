@@ -24,12 +24,12 @@ Table of contents
       * [Run Simple Visualisation](#run-simple-visualisation)
       * [Run Advance Visualisation](#run-advance-visualisation)
   * Milestone 2
-      * [Experiment Tracking](#download-data)
-      * [Run Extracting Feature Engineering I and II](#run-interactive-debugging-tool)
-      * [Experiments on Baseline Models](#create-tidy-data-for-visualisation)
-      * [Experiments on Baseline Models](#run-simple-visualisation)
-      * [Best Shot Models](#run-advance-visualisation)
-      * [Run Final Evaluation on Test Data](#run-advance-visualisation)
+      * [Experiment Tracking](#experiment-tracking)
+      * [Run Extracting Feature Engineering I and II](#run-extracting-feature-engineering-i-and-ii)
+      * [Run Baseline Models](#run-baseline-models)
+      * [Run Advance Models](#run-advanced-models)
+      * [Run Best Shot Models](#run-best-shot-models)
+      * [Run Evaluate on Test Set](#run-evaluate-on-test-set)
 * [Project Structure](#project-structure)
 * [Data APIs](#data-apis)
 * [Data Insights](#data-insights)
@@ -39,13 +39,13 @@ Table of contents
       * [Simple Visualisation](#simple-visualisations)
       * [Advanced Visualisation](#advanced-visualisations)
   * Milestone 2
-      * [Experiment Tracking](#data-extractions)
-      * [Feature Engineering I](#interactive-debugging-tool)
-      * [Baseline Models](#simple-visualisations)
-      * [Feature Engineering II]()
-      * [Advanced Models](#advanced-visualisations)
-      * [Best Shot Models](#advanced-visualisations)
-      * [Evaluate on Test Set](#advanced-visualisations)
+      * [Experiment Tracking](#experiment-tracking)
+      * [Feature Engineering I](#feature-engineering-i)
+      * [Baseline Models](#baseline-models)
+      * [Feature Engineering II](#feature-engineering-ii)
+      * [Advanced Models](#advanced-models)
+      * [Best Shot Models](#best-shot-models)
+      * [Evaluate on Test Set](#evaluate-on-test-set)
 
 * [Conclusion](#conclusion)
 * [Authors](#authors)
@@ -85,6 +85,8 @@ The purpose of this project is to provide a Python API for accessing NHL data, s
     project_name_final_test_regular=project_name_final_test_regular
     workspace=data-science-workspace
     ```
+- Create following folder in the root directory,
+  - `downloaded_models`
 
 ## Install Dependencies
 
@@ -141,29 +143,29 @@ and save the data into a pickle file for all the seasons starting from 2016 to 2
   - [Final Test on Playoffs game](https://www.comet.com/data-science-workspace/project-name-final-test-playoffs/view/new/panels)
   - [Final Test on Regular Games](https://www.comet.com/data-science-workspace/project-name-final-test-regular/view/new/panels)
 
-### Feature Engineering I
+### Run Extracting Feature Engineering I and II
   - Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
   - Navigate to the `notebook` folder 
   - Run `8_feature_engineering_I_and_II_m2.ipynb` file to see in the interactive mode else 
   - Run `8_feature_engineering_I_and_II_m2.py` as a standalone code as well. 
 
-### Baseline Models
+### Run Baseline Models
   - Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
   - Navigate to the `notebook` folder 
   - Run `9_baseline_models_all.ipynb` file to see in the interactive mode else 
   - Run `q6_best_shot_all.py` as a standalone code as well. 
 
-### Advanced Models
+### Run Advanced Models
   - Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
   - Navigate to the `notebook` folder 
   - Run `10_advanced_models.ipynb` file to see in the interactive mode else 
   - Run `advanced_models.py` as a standalone code as well. 
-### Best Shot Models
+### Run Best Shot Models
   - Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
   - Navigate to the `notebook` folder 
   - Run `11_best_shot_all.ipynb` file to see in the interactive mode else 
   - Run `q6_best_shot_all.py` as a standalone code as well. 
-### Evaluate on Test Set
+### Run Evaluate on Test Set
   - Run the `jupyter notebook` locally inside the project folder (Incase if jupyter notebook isn't running)
   - Navigate to the `notebook` folder 
   - Run `12_Final_Evaluation_Testing_playoffs.ipynb` file to see in the interactive mode else 
@@ -203,7 +205,7 @@ This project uses two APIs which were provided by the NHL :
 
 # Data Insights
 
-## Milestone 2
+## Milestone 1
 ### Data Extractions
 
 The data available by the NHL API needs to be parsed and formatted to make more advanced data usage possible. In this regard, we select the relevant data out from the nested dictionaries from the JSON file, and we format a single tabular structure, i.e. 
