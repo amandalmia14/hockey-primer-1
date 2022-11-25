@@ -52,3 +52,4 @@ data
 */.ipynb_checkpoints/*
 # Misc
 *.DS_Store
+model/
