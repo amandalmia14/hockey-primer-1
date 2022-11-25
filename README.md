@@ -5,6 +5,7 @@
 ![](https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white)
 ![](https://img.shields.io/badge/Version-1.0.0-green)
 
+### Milestone 2 blogpost [link](https://modeha.github.io/)
 
 Table of contents
 =================
