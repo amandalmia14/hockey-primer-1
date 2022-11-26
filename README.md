@@ -467,6 +467,182 @@ Snap Shot, Tip-In, Wrap-around, Wrist Shot, and NA.
 Giveaway, Goal, Hit, Missed shot, Penalty, Shot, Takeaway.
 
 ### Advanced Models
+#### script: modules/milestone2/advanced_models.py 
+`
+python3 advanced_models.py -m 0
+`
+where -m arg takes 0 to 2 values for 3 types of feature experiments. It also logs all the metric and graphs to comet.ml.
+
+### Best XGBoost Model
+<em><strong>
+[ XGBoost model](https://www.comet.com/data-science-workspace/model-registry/xgboost-feature-selection-class-weights)
+
+### Hyperparameter Tuning and Model Comparison
+In each experiment, we try to find best possible values of hyperparameters utilizing a grid search. We split the train set into stratified 3-fold cross-validation and take mean performance to decide the best performing set of hyperparamters. As explained before, we have class imbalance in our data, which is better captured by `F1 Score` metric.
+
+In order to compare models based on their performance, we used the same train-validation split for all models. This guarantees that the performance metrics are obtained on exactly the same dataset, therefore we can compare the models performance. Specifically train-validation split was an 80%-20% split obtained with random splitting, and we used exactly the same for all models.
+
+### Handling Class Imbalance
+We tried 2 methods to handle the huge class imbalace present in the data:
+  1. Class weighting the objective function:
+
+  In this method, due to the nature of algorithm we employ gradient updates for parameter optimization. While aggregrating the gradients over the samples, we apply weights to them based on the number of occurances in training sets. We scale the gradients for majority and minority classes to achieve balance.
+  2. ADASYN algorithm:
+
+  In this method we oversample the minority class so that we have enough samples to learn from. The new samples are generated synthetically. 
+
+We compare the results from both this methods for all 3 XGBoost configuration and found that we don't find much difference in performance metrics(F1 Score). The results reported are from utilizing class weighting.
+### XGBoost classifier train on distance and angle
+  First we create xgboost baseline to compare the logistic baseline, with just 'distance' and 'angle' as the features. To tackle the class imbalance problem, Following are the hyper-parameters for grid search:
+  
+  ```
+  {"learning_rate": [0.1, 0.3], "max_depth": [2, 4, 6], "n_estimators": [4, 6, 8, 10], "objective": ["binary:logistic"], "reg_alpha": [0.1, 1.0]}
+  ``` 
+  We get the following hyper-parameters for best estimator:
+ 
+  ```
+  {'learning_rate': 0.3, 'max_depth': 6, 'n_estimators': 6, 'objective': 'binary:logistic', 'reg_alpha': 1.0}
+  ```
+
+  Here, we compare the performance of XGBoost based on features distance and angle, to that of a simple logistic regression trained using the same features. The ROC AUC=0.66892 obtained for the logistic regression was, while that obtained with XGBoost is ROC AUC= 0.708. We consider that there is no significant difference here between the performance of these two models. This is likely explained by the fact that they were trained on only two features, therefore the XGBoost does not have much advantage over the logistic model here.
+
+
+
+<p align="center">
+<img src="/assets/figures/xgboost01.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/xgboost02.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/xgboost03.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/xgboost04.svg"/>
+</p>
+
+## XGBoost classifier train on all features
+
+Next, we use all the features as defined in the section feature engineering 2. We use the same configuration of training/validation split and grid search with cross-validation as XGBoost baseline. As explained above, `F1 Score` is used as metric for selecting best performing model. Following are the hyperparameters for hyperparameter tuning:
+
+```
+{"learning_rate": [0.3], "max_depth": [4, 6, 8], "n_estimators": [25, 45, 70, 100], "objective": ["binary:logistic"], "reg_alpha": [1.0], "reg_lambda": [1.0]}
+```
+We get the following configuration for the best estimator:
+
+```
+{'learning_rate': 0.3, 'max_depth': 4, 'n_estimators': 45, 'objective': 'binary:logistic', 'reg_alpha': 1.0, 'reg_lambda': 1.0}
+```
+
+[Link to the model experiment](https://www.comet.com/data-science-workspace/advanced-models/77f0015ccf7f45afba799b51603448fb?experiment-tab=chart&showOutliers=true&smoothing=0&transformY=smoothing&xAxis=step)
+
+## Performance of the model
+We notice a small improvement of performance of the model when using all features (ROC AUC = 0.757) as compared to using only distance and angle (ROC AUC = 0.708).
+<p align="center">
+<img src="/assets/figures/gb01.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/gb02.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/gb03.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/gb04.svg"/>
+</p>
+
+## Feature Selection 
+
+  We used a range of methods of feature selection that cover all types: filter, wrapper, and embedded methods. Here, we discuss and compare the results of each method. For each method, we keep the 5 highest-scoring features; and at the end, we will compute the intersection and union between all sets of obtained features. 
+
+  Before starting feature selection, we notice that some features are correlated. Specifically, angle is correlated with y_coordinate (r=0.84) and change_in_shot_angle as well as rebound are correlated with last_event_type_SHOT (because these variables were defined based on one another). This means that there is probably some redundant information in these variables that needs to be parsed using feature selection.
+
+
+
+<p align="center">
+<img src="/assets/figures/Picture1.png"/>
+</p>
+
+## Filter Methods
+We first used a variance threshold of 80%, thus removing all features that are either one or zero in more than 80% of the sample. 
+<p align="center">
+<img src="/assets/figures/fig01.jpeg"/>
+</p>
+Then, we decided to keep only the 5 features with the highest variance, to stay coherent with the general method for all feature selection methods. The 5 top-ranked features were: `['distance', 'angle', 'distance_from_last_event', 'x_coordinate', 'game_seconds']`
+
+Then, we also used univariate feature selection while using 6 different criteria. That is, we used all the methods available in scikit-learn that can be used for a classification task and that accept both positive and negative inputs: 
+
+•	ANOVA F-value between label/feature for classification tasks.
+
+•	Mutual information for a discrete target.
+
+•	Percentile of the highest scores.
+
+•	False positive rate test.
+
+•	Estimated false discovery rate.
+
+•	Family-wise error rate.
+<p align="center">
+<img src="/assets/figures/fig02.jpeg"/>
+</p>
+The 5 top-ranked features (on average among methods) were:` ['distance', 'empty_net', 'game_period', 'y_coordinate', 'shot_type_Wrist Shot']`
+
+
+## Wrapper methods
+We used both forward search and backward search using a logistic regression, setting the number of features to select equal to 5. For these methods, we scaled all features because this was needed for the logistic regression to converge.  
+
+Forward search resulted in these features: 
+`['distance', 'angle', 'empty_net', 'game_period', 'distance_from_last_event']`
+
+Backward search: the model does not converge. 
+
+## Embedded methods
+We evaluated the coefficients from l2-penalized logistic regression, as well as that of Linear Support Vector Classification. Note that we are interested in the magnitude, therefore in the absolute value of the coefficient. For these methods, we scaled all features because this was needed for the logistic regression to converge.  
+<p align="center">
+<img src="/assets/figures/fig03.jpeg"/>
+</p>
+For logistic regression, the 5 top-ranked features were: [`distance`, `empty_net`, `distance_from_last_event`, `speed`, `shot_type_Wrap-around`]
+For linear SVC, the 5 top-ranked features were: [`distance`, `empty_net`, `distance_from_last_event`, `speed`, `shot_type_Tip-In`]
+
+## SHAP Features
+We also use SHAP algorithm's tree explainer which operate on adding particular feature to a subset of features and assigns importance based on its contribution. We use all features XGBoost model to generate the Shapley values and in turn get the feature importance. Following plot describes this:
+<p align="center">
+<img src="/assets/figures/shap_values.png"/>
+</p>
+
+## Summary and consensus among feature selection methods
+
+In summary, we used 2 filter (including 6 different univariate methods) plus wrapper two more embedded and SHAP for the total of six different methods. From these, we compute the intersection and union of sets of 5 top-ranked features from each method. We obtain: 
+
+Intersection: [`distance`]
+
+Union: [`angle`, `distance_from_last_event`, `empty_net`, `shot_type_Wrap-around`, `y_coordinate`, `speed`, `distance`, `x_coordinate`, `game_period`, `shot_type_Tip-In`, `shot_type_Wrist Shot`, `game_seconds`]
+
+## XGBoost train on selected features
+[Link to the model experiment](https://www.comet.com/data-science-workspace/advanced-models/8824cd33f6aa4574886508b514cc6724?experiment-tab=chart&showOutliers=true&smoothing=0&transformY=smoothing&xAxis=step)
+
+We utlize the following hyper-parameter configuration for grid search:
+
+```
+{"learning_rate": [0.1, 0.4], "max_depth": [4, 6, 8], "n_estimators": [25, 35, 50, 70, 100], "objective": ["binary:logistic"], "reg_alpha": [1.0], "reg_lambda": [1.0]}
+```
+
+Performance of the model
+It is important to notice that the feature selection achieved in improving the model performance. While the model with all features had a ROC AUC = 0.708, the model with less but rigorously selected features had an ROC AUC = 0.75. This reflects the fact that sometimes adding more features mostly adds more noise. This is an illustration of why feature selection is important.
+<p align="center">
+<img src="/assets/figures/xgb01.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/xgb02.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/xgb03.svg"/>
+</p>
+<p align="center">
+<img src="/assets/figures/xgb04.svg"/>
+</p>
+
 
 ### Best Shot Models
 We trained and evaluated a variety of different models. Considering that our dataset was unbalanced (goals represent 
