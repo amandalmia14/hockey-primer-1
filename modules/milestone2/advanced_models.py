@@ -39,10 +39,10 @@ model_code = args.model_code
 
 ### TODO:keep experiment and filename same
 exp_type = ["xgboost_dist_angle","xgboost_all_features","xgboost_feature_selection"]
-exp_name = exp_type[model_code]+'_class_weights'
+exp_name = exp_type[model_code]+'_adasyn'
 
 config = configparser.ConfigParser()
-config.read('../configfile.ini')
+config.read('../../configfile.ini')
 type_env = "comet_ml_prod" #comet_ml_prod
 COMET_API_KEY = config[type_env]['api_key']
 COMET_PROJECT_NAME = config[type_env]['project_name_advanced']
@@ -58,15 +58,15 @@ comet_exp_obj.log_code("advanced_models.py")
 #######
 
 ###### load data and class imbalance handling
-ada = ADASYN(random_state=42)
-x_train = pd.read_pickle("../data/dataset/x_train.pkl").drop(columns=['is_goal','game_id','season'])
-x_val = pd.read_pickle("../data/dataset/x_val.pkl").drop(columns=['is_goal','game_id','season'])
-y_train = pd.read_pickle("../data/dataset/y_train.pkl")
-y_val = pd.read_pickle("../data/dataset/y_val.pkl")
+ada = ADASYN(random_state=42,sampling_strategy=0.5)
+x_train = pd.read_pickle("../../data/dataset/x_train.pkl").drop(columns=['is_goal','game_id','season'])
+x_val = pd.read_pickle("../../data/dataset/x_val.pkl").drop(columns=['is_goal','game_id','season'])
+y_train = pd.read_pickle("../../data/dataset/y_train.pkl")
+y_val = pd.read_pickle("../../data/dataset/y_val.pkl")
 
-#x_train, y_train = ada.fit_resample(x_train,y_train) 
-cw = (len(y_train)- y_train.sum())/y_train.sum()
-#cw = 1
+x_train, y_train = ada.fit_resample(x_train,y_train) 
+#cw = (len(y_train)- y_train.sum())/y_train.sum()
+cw = 1
 ######
 
 ###### model gridsearch and graphs
@@ -75,7 +75,7 @@ cw = (len(y_train)- y_train.sum())/y_train.sum()
 if model_code == 0:
     params = {
                 'objective':['binary:logistic'],
-                'max_depth': [0],
+                'max_depth': [2,4,6],
                 'reg_alpha': [0.1,1.0],
                 'learning_rate': [0.1,0.3],
                 'n_estimators':[4,6,8,10]
@@ -100,7 +100,7 @@ if model_code == 0:
 elif model_code == 1:
     params = {
             'objective':['binary:logistic'],
-            'max_depth': [0],
+            'max_depth': [4,6,8],
             'reg_alpha': [1.0],
             'reg_lambda':[1.0],
             'learning_rate': [0.3],
@@ -130,7 +130,7 @@ elif model_code == 2:
     fs = ['angle', 'distance_from_last_event', 'empty_net', 'shot_type_Wrap-around', 'y_coordinate', 'speed', 'distance', 'x_coordinate', 'game_period', 'shot_type_Tip-In', 'shot_type_Wrist Shot', 'game_seconds'] 
     params = {
             'objective':['binary:logistic'],
-            'max_depth': [0],
+            'max_depth': [4,6,8],
             'reg_alpha': [1.0],
             'reg_lambda':[1.0],
             'learning_rate': [0.1,0.4],
@@ -141,6 +141,7 @@ elif model_code == 2:
     grid3 = GridSearchCV(estimator=model,param_grid = params, scoring='f1',cv=3,return_train_score=True)
     grid3.fit(x_train[fs].to_numpy(),y_train.to_numpy())
     results = grid3.cv_results_
+    print(grid3.best_params_)
 
     y_pred = grid3.best_estimator_.predict(x_train[fs].to_numpy())
     print(classification_report(y_train.to_numpy(),y_pred))

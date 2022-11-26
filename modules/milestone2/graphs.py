@@ -18,7 +18,7 @@ warnings.filterwarnings('ignore')
 
 
 def log_comet(comet_exp_obj, name, model, x_val, y_val):
-    filename = '../model/' + name + "_Model.pkl"
+    filename = '../../model/' + name + "_Model.pkl"
     pickle.dump(model, open(filename, 'wb'))
     comet_exp_obj.log_model(name, file_or_folder=filename, overwrite=True, file_name=name + "_Model")
 
