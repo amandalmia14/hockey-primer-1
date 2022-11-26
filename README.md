@@ -474,8 +474,7 @@ python3 advanced_models.py -m 0
 
 where -m arg takes 0 to 2 values for 3 types of feature experiments. It also logs all the metric and graphs to comet.ml.
 
-### Best XGBoost Model
-<em><strong>
+#### Best XGBoost Model
 [ XGBoost model](https://www.comet.com/data-science-workspace/model-registry/xgboost-feature-selection-class-weights)
 
 ### Hyperparameter Tuning and Model Comparison
@@ -488,6 +487,7 @@ We tried 2 methods to handle the huge class imbalace present in the data:
   1. Class weighting the objective function:
 
   In this method, due to the nature of algorithm we employ gradient updates for parameter optimization. While aggregrating the gradients over the samples, we apply weights to them based on the number of occurances in training sets. We scale the gradients for majority and minority classes to achieve balance.
+  
   2. ADASYN algorithm:
 
   In this method we oversample the minority class so that we have enough samples to learn from. The new samples are generated synthetically. 
@@ -508,19 +508,23 @@ We compare the results from both this methods for all 3 XGBoost configuration an
   Here, we compare the performance of XGBoost based on features distance and angle, to that of a simple logistic regression trained using the same features. The ROC AUC=0.66892 obtained for the logistic regression was, while that obtained with XGBoost is ROC AUC= 0.708. We consider that there is no significant difference here between the performance of these two models. This is likely explained by the fact that they were trained on only two features, therefore the XGBoost does not have much advantage over the logistic model here.
 
 
+<details>
+<summary>Calibration Plots</summary>
+     <img src="figures/xgboost01.svg" width="325">
+</details>
+<details>
+<summary>Cumulative Percentage of Goals</summary>
+     <img src="figures/xgboost04.svg" width="325">
+</details>
+<details>
+<summary>Receiver Operating Characteristic (ROC) curves and the AUC metric<</summary>
+     <img src="figures/xgboost02.svg" width="325">
+</details>
+<details>
+<summary>Goal Rate</summary>
+     <img src="figures/xgboost03.svg" width="325">
+</details>
 
-<p align="center">
-<img src="/assets/figures/xgboost01.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/xgboost02.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/xgboost03.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/xgboost04.svg"/>
-</p>
 
 ## XGBoost classifier train on all features
 
@@ -539,18 +543,24 @@ We get the following configuration for the best estimator:
 
 ## Performance of the model
 We notice a small improvement of performance of the model when using all features (ROC AUC = 0.757) as compared to using only distance and angle (ROC AUC = 0.708).
-<p align="center">
-<img src="/assets/figures/gb01.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/gb02.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/gb03.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/gb04.svg"/>
-</p>
+
+<details>
+<summary>Calibration Plots</summary>
+     <img src="figures/gb01.svg" width="325">
+</details>
+<details>
+<summary>Cumulative Percentage of Goals</summary>
+     <img src="figures/gb02.svg" width="325">
+</details>
+<details>
+<summary>Receiver Operating Characteristic (ROC) curves and the AUC metric<</summary>
+     <img src="figures/gb04.svg" width="325">
+</details>
+<details>
+<summary>Goal Rate</summary>
+     <img src="figures/gb03.svg" width="325">
+</details>
+
 
 ## Feature Selection 
 
@@ -558,17 +568,18 @@ We notice a small improvement of performance of the model when using all feature
 
   Before starting feature selection, we notice that some features are correlated. Specifically, angle is correlated with y_coordinate (r=0.84) and change_in_shot_angle as well as rebound are correlated with last_event_type_SHOT (because these variables were defined based on one another). This means that there is probably some redundant information in these variables that needs to be parsed using feature selection.
 
-
-
-<p align="center">
-<img src="/assets/figures/Picture1.png"/>
-</p>
+<details>
+<summary>Correlation Matrix</summary>
+     <img src="figures/Picture1.png" width="325">
+</details>
 
 ## Filter Methods
 We first used a variance threshold of 80%, thus removing all features that are either one or zero in more than 80% of the sample. 
-<p align="center">
-<img src="/assets/figures/fig01.jpeg"/>
-</p>
+<details>
+<summary>Feature Variance</summary>
+     <img src="figures/fig01.jpeg" width="325">
+</details>
+
 Then, we decided to keep only the 5 features with the highest variance, to stay coherent with the general method for all feature selection methods. The 5 top-ranked features were: `['distance', 'angle', 'distance_from_last_event', 'x_coordinate', 'game_seconds']`
 
 Then, we also used univariate feature selection while using 6 different criteria. That is, we used all the methods available in scikit-learn that can be used for a classification task and that accept both positive and negative inputs: 
@@ -584,9 +595,11 @@ Then, we also used univariate feature selection while using 6 different criteria
 •	Estimated false discovery rate.
 
 •	Family-wise error rate.
-<p align="center">
-<img src="/assets/figures/fig02.jpeg"/>
-</p>
+<details>
+<summary>Filter Methods</summary>
+     <img src="figures/fig02.jpeg" width="325">
+</details>
+
 The 5 top-ranked features (on average among methods) were:` ['distance', 'empty_net', 'game_period', 'y_coordinate', 'shot_type_Wrist Shot']`
 
 
@@ -600,17 +613,21 @@ Backward search: the model does not converge.
 
 ## Embedded methods
 We evaluated the coefficients from l2-penalized logistic regression, as well as that of Linear Support Vector Classification. Note that we are interested in the magnitude, therefore in the absolute value of the coefficient. For these methods, we scaled all features because this was needed for the logistic regression to converge.  
-<p align="center">
-<img src="/assets/figures/fig03.jpeg"/>
-</p>
+
+<details>
+<summary>Embedded methods</summary>
+     <img src="figures/fig03.jpeg" width="325">
+</details>
 For logistic regression, the 5 top-ranked features were: [`distance`, `empty_net`, `distance_from_last_event`, `speed`, `shot_type_Wrap-around`]
 For linear SVC, the 5 top-ranked features were: [`distance`, `empty_net`, `distance_from_last_event`, `speed`, `shot_type_Tip-In`]
 
 ## SHAP Features
 We also use SHAP algorithm's tree explainer which operate on adding particular feature to a subset of features and assigns importance based on its contribution. We use all features XGBoost model to generate the Shapley values and in turn get the feature importance. Following plot describes this:
-<p align="center">
-<img src="/assets/figures/shap_values.png"/>
-</p>
+<details>
+<summary>SHAP Features</summary>
+     <img src="figures/shap_values.png" width="325">
+</details>
+
 
 ## Summary and consensus among feature selection methods
 
@@ -631,18 +648,23 @@ We utlize the following hyper-parameter configuration for grid search:
 
 Performance of the model
 It is important to notice that the feature selection achieved in improving the model performance. While the model with all features had a ROC AUC = 0.708, the model with less but rigorously selected features had an ROC AUC = 0.75. This reflects the fact that sometimes adding more features mostly adds more noise. This is an illustration of why feature selection is important.
-<p align="center">
-<img src="/assets/figures/xgb01.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/xgb02.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/xgb03.svg"/>
-</p>
-<p align="center">
-<img src="/assets/figures/xgb04.svg"/>
-</p>
+<details>
+<summary>Calibration Plots</summary>
+     <img src="figures/xgb01.svg" width="325">
+</details>
+<details>
+<summary>Cumulative Percentage of Goals</summary>
+     <img src="figures/xgb02.svg" width="325">
+</details>
+<details>
+<summary>Receiver Operating Characteristic (ROC) curves and the AUC metric<</summary>
+     <img src="figures/xgb03.svg" width="325">
+</details>
+<details>
+<summary>Goal Rate</summary>
+     <img src="figures/xgb04.svg" width="325">
+</details>
+
 
 
 ### Best Shot Models
