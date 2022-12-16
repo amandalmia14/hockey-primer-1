@@ -6,6 +6,7 @@ import pickle
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
+import sklearn
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
