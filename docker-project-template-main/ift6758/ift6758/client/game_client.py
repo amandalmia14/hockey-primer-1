@@ -2,7 +2,6 @@ import json
 import requests
 import pandas as pd
 import logging
-from data_processing import *
 from data_retrival import *
 
 logger = logging.getLogger(__name__)

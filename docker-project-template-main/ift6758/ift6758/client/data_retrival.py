@@ -4,7 +4,8 @@ import traceback
 import numpy as np
 import pandas as pd
 import requests
-from constant import Directory, TYPES_OF_SHOTS
+
+TYPES_OF_SHOTS = ["Goal", "Shot"]
 
 game_id_url = "https://statsapi.web.nhl.com/api/v1/game/{}/feed/live/"
 
@@ -21,28 +22,6 @@ def get_data_by_gameid(game_id: str):
         print(e)
         print(traceback.print_exc())
         pass
-
-
-def get_json_path(game_id=0, season=0):
-    """
-    This function takes an input game id and return the location of the json file
-    @param game_id: game id for which we need to get the data
-    @return: local system path
-    """
-    if game_id != 0:
-        year = str(game_id)[:4]
-        season = str(game_id)[4:6]
-        if season == "02":
-            game_type = "regular_season"
-        elif season == "03":
-            game_type = "playoffs"
-        else:
-            game_type = ""
-        return Directory.DATA_DIR + year + os.path.sep + str(year) + "_" + game_type + ".json", ""
-    elif season != 0:
-        regular_season = Directory.DATA_DIR + str(season) + os.path.sep + str(season) + "_regular_season.json"
-        playoffs_season = Directory.DATA_DIR + str(season) + os.path.sep + str(season) + "_playoffs.json"
-        return regular_season, playoffs_season
 
 
 def flatten_player_data(player_list):
