@@ -30,5 +30,7 @@ def predict(model,model_name, x):
     if model_name == "Neural_Network":
         pred = get_probs_nn(model, x)
     else:
-        pred_list = model.predict_proba(x)
+        pred = model.predict_proba(x)
+
+    return pred
     
