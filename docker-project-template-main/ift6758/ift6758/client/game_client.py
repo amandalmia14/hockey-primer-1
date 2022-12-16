@@ -25,13 +25,13 @@ class GameClient:
         event_arr = game_dict['liveData']['plays']['allPlays']
         if len(event_arr) > self.last_entry_idx:
             
-            df = self.process_live_data(game_id,game_dict,self.last_entry_idx+1)
+            df = self.process_live_data(game_id,game_dict,self.last_entry_idx+1,self.last_event_data)
             self.last_entry_idx = len(event_arr) - 1 
             self.last_event_data = last_data_parsing(event_arr[-1])
 
         return df
 
-    def process_live_data(self,game_id,game_dict,entry_idx):
+    def process_live_data(self,game_id,game_dict,entry_idx,last_event_data):
         period_dict = get_side(game_meta=game_dict)
         teams_type = get_home_away_team(game_meta=game_dict)
         live_data = game_dict["liveData"]["plays"]["allPlays"]
@@ -40,7 +40,8 @@ class GameClient:
             if i["result"]["event"] in TYPES_OF_SHOTS:
                 try:
                     parsed_data = data_parsing(data=i, id=game_id, event_type=i["result"]["event"],
-                                            period_dict=period_dict, team_detail_dict=teams_type)
+                                            period_dict=period_dict, team_detail_dict=teams_type,
+                                            last_event_data=last_event_data)
                     final_list.append(parsed_data)
                 except Exception as e:
                     print(e)
