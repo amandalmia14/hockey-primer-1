@@ -1,0 +1,10 @@
+numpy
+pandas
+matplotlib
+requests
+flask
+scikit-learn
+torch
+xgboost
+comet-ml
+#streamlit
