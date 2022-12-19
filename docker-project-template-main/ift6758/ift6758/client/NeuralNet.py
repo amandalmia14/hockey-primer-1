@@ -45,8 +45,6 @@ def get_probs_nn(model, df_feg):
     :return: pred_list, testy, ns_probs
     """
     with torch.no_grad():
-        print(df_feg.columns)
-        print(df_feg[df_feg.eq("18:58").any(1)].values)
         X = torch.Tensor(torch.Tensor(df_feg.values.astype(np.float32))).to(device)
         pred = model(X)
     return pred

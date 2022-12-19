@@ -76,12 +76,10 @@ if __name__ == '__main__':
     from feature_engineering import main_feature_engg
 
     df_feg = main_feature_engg(df=data)
-    print(df_feg.columns)
 
     model, _ = sc_obj.download_registry_model(workspace="data-science-workspace", model="neural-network-model",
                                               version="1.0.0")
-    print(df_feg.head())
-    print(type(df_feg))
+
     from ift6758.ift6758.client.NeuralNet import get_probs_nn, transform_data_for_nn
 
     test_dataloader = transform_data_for_nn(X_test=df_feg)

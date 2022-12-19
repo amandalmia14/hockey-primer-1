@@ -9,7 +9,6 @@ class GameClient:
     def __init__(self, ip: str = "0.0.0.0", port: int = 5001, features=None):
         self.base_url = f"http://{ip}:{port}"
         logger.info(f"Initializing client; base URL: {self.base_url}")
-
         if features is None:
             features = ["distance"]
         self.features = features
@@ -22,10 +21,11 @@ class GameClient:
         # diff based on all event types, but our df only concerns about shot and goal events
         game_dict = get_data_by_gameid(game_id)
         event_arr = game_dict['liveData']['plays']['allPlays']
+        print("self.last_entry_idx", self.last_entry_idx)
         if len(event_arr) > self.last_entry_idx:
             df = self.process_live_data(game_id, game_dict, self.last_entry_idx)
             self.last_entry_idx = len(event_arr) - 1
-
+        print("df", df.head())
         return df
 
     def process_live_data(self, game_id, game_dict, entry_idx):
