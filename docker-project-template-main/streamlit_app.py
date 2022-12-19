@@ -3,7 +3,8 @@ import json
 import pandas as pd
 import requests
 import streamlit as st
-
+from sklearn import metrics
+import matplotlib.pyplot as plt
 from ift6758.ift6758.client.feature_engineering import main_feature_engg
 from ift6758.ift6758.client.game_client import GameClient
 
@@ -33,22 +34,22 @@ if gameID:
         # call the game client here in order to get a new sample of events differnt from previous ones
         # and return the 9 parameters below
         data = gc_obj.get_live_data(game_id=gameID)
-        df_feg = main_feature_engg(df=data)
+        df_input = main_feature_engg(df=data)
 
         response = requests.post(
             "http://127.0.0.1:5000/predict",
-            json=json.loads(df_feg.to_json())
+            json=json.loads(df_input.to_json())
         )
-        df_input = pd.DataFrame.from_dict(response.json())
-        df_feg["Goal Probabilities"] = response.json()["goal_probabilities"]
-        last_row_data = df_feg.iloc[-1]
+        # df_input = pd.DataFrame.from_dict(response.json())
+        df_input["goal_probabilities"] = response.json()["goal_probabilities"]
+        last_row_data = df_input.iloc[-1]
         time_left = last_row_data["about_time_remaining"]
 
-        sum_df = df_feg.groupby(['action_team_name'])['Goal Probabilities'].sum()
+        sum_df = df_input.groupby(['action_team_name'])['goal_probabilities'].sum()
 
         json_data_total_prob = json.loads(sum_df.to_json())
-        home_team_name = df_feg["home_team"].unique().tolist()[0]
-        away_team_name = df_feg["away_team"].unique().tolist()[0]
+        home_team_name = df_input["home_team"].unique().tolist()[0]
+        away_team_name = df_input["away_team"].unique().tolist()[0]
         period = last_row_data["game_period"]
         home_team_current_score = last_row_data["about_goal_home"]
         away_team_current_score = last_row_data["about_goal_away"]
@@ -68,8 +69,8 @@ if gameID:
                     delta=round(away_team_sum_of_expected_goals - away_team_current_score, 1))
         st.header("Data and Predictions")
 
-        df_feg = df_feg.drop(drop_features_for_display, axis=1)
-        st.write(df_feg)
+        df_input = df_input.drop(drop_features_for_display, axis=1)
+        st.write(df_input)
 
     # Bonus: display graphs - the input is the dataframe "df_input"
     if 'df_input' in locals():
@@ -89,7 +90,10 @@ if gameID:
             st.pyplot(fig)
         if option.count('Goal rate by predicted decile')>0:
             st.subheader('Goal rate by predicted decile:')
-            st.write("The observations are binned into deciles, and for each, we compute the proportion of goals (rate). Note that lower deciles are those with the highest probability of goal. If the model performs well, there should be a relationship such that the lower the decile, the higher the goal rate.")
+            st.write("The observations are binned into deciles, and for each, we compute the proportion of goals "
+                     "(rate). Note that lower deciles are those with the highest probability of goal. "
+                     "If the model performs well, there should be a relationship such that the lower the decile,"
+                     " the higher the goal rate.")
             fig, ax = plt.subplots(1, 1)
             goal_prob = df_input[['goal_probabilities']]
             df = df_input[['is_goal']]
