@@ -1,3 +1,4 @@
 #!/bin/bash
 
-echo "TODO: fill in the docker build command"
+docker build -f Dockerfile.serving -t nhl-serving:v1 .
+docker build -f Dockerfile.streamlit -t nhl-streamlit:v1 .
