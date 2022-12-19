@@ -42,7 +42,7 @@ all_imp_features = ['angle', 'distance_from_last_event', 'empty_net', 'shot_type
                     'game_seconds']
 model_feature_map = {
     "Neural_Network": all_imp_features,
-    "xgboost-feature-selection-class-weights": all_imp_features,
+    "xgboost_feature_selection_class_weights": all_imp_features,
     "LinearModel_Angle": ["angle"],
     "LinearModel_Angle_Distance": ["angle", "distance"],
     "LinearModel_Distance": ["distance"],
