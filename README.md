@@ -47,6 +47,8 @@ Table of contents
       * [Advanced Models](#advanced-models)
       * [Best Shot Models](#best-shot-models)
       * [Evaluate on Test Set](#evaluate-on-test-set)
+  * Milestone 3
+      * [Deployment] (#deployment) 
 
 * [Conclusion](#conclusion)
 * [Authors](#authors)
@@ -787,6 +789,17 @@ to build a strong robust model which is flexible in many scenarios.
 <summary>Calibration Plots</summary>
      <img src="figures/md09.svg" width="325">
 </details>
+
+## Milestone 3
+
+### Deployment
+
+Whatever the work which we did on the Milestone 1 and Milestone 2 we need to productionize the code, which includes
+dockerization of the entire setup. 
+- All the codes resides under the folder `docker-project-template-main`. 
+- Make sure you have `COMET_API_KEY` in your environment variable and Docker is installed in your system.
+- Navigate to the folder as mentioned above and open a command prompt / terminal and run  `docker-compose --build up`
+
 
 # Conclusion
 The present project is a good example of how sports data can be obtained from a publically available API, and made into 
