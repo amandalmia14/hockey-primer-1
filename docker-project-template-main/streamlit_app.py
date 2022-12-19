@@ -13,6 +13,10 @@ gc_obj = GameClient()
 drop_features_for_display = ['about_time_remaining', 'home_team', 'away_team', 'action_team_name',
                              'event_type_id', 'about_goal_away', 'about_goal_home']
 
+all_imp_features = ['angle', 'distance_from_last_event', 'empty_net', 'shot_type_Wrap-around', 'y_coordinate', 'speed',
+                    'distance', 'x_coordinate', 'game_period', 'shot_type_Tip-In', 'shot_type_Wrist Shot',
+                    'game_seconds']
+
 st.title("Hockey Visualization App")
 with st.sidebar:
     workspace = st.text_input("Workspace", value="")
@@ -22,7 +26,7 @@ with st.sidebar:
     if st.button('Load Model'):
         # Load model from Comet ML here using the 3 inputs above
         response = requests.post(
-            "http://127.0.0.1:5000/download_registry_model",
+            "http://localhost:8080/download_registry_model",
             json=data
         )
         st.write(response.json()["message"])
@@ -35,10 +39,10 @@ if gameID:
         # and return the 9 parameters below
         data = gc_obj.get_live_data(game_id=gameID)
         df_input = main_feature_engg(df=data)
-
+        df_imp_features = df_input[all_imp_features]
         response = requests.post(
-            "http://127.0.0.1:5000/predict",
-            json=json.loads(df_input.to_json())
+            "http://localhost:8080/predict",
+            json=json.loads(df_imp_features.to_json())
         )
         # df_input = pd.DataFrame.from_dict(response.json())
         df_input["goal_probabilities"] = response.json()["goal_probabilities"]
