@@ -1,6 +1,10 @@
-streamlit
+numpy
 pandas
 matplotlib
-sklearn
-json
 requests
+flask
+scikit-learn
+torch
+xgboost
+comet-ml
+streamlit
