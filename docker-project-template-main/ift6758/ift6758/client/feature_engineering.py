@@ -176,4 +176,9 @@ def main_feature_engg(df):
              'about_time_remaining', 'home_team', 'away_team', 'action_team_name', 'event_type_id', 'about_goal_away',
              'about_goal_home']]
 
+    # df = df[['angle', 'distance_from_last_event', 'empty_net', 'shot_type_Wrap-around', 'y_coordinate', 'speed',
+    #          'distance', 'x_coordinate', 'game_period', 'shot_type_Tip-In', 'shot_type_Wrist Shot', 'game_seconds',
+    #          'about_time_remaining', 'home_team', 'away_team', 'action_team_name', 'event_type_id', 'about_goal_away',
+    #          'about_goal_home']]
+
     return df
