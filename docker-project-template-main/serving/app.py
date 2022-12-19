@@ -9,19 +9,19 @@ gunicorn can be installed via:
 
 """
 import sys
+
 sys.path.append(".")
+
 import os
 import logging
 import json
-import numpy as np
 from flask import Flask, jsonify, request
-import pickle
 import pandas as pd
 from ift6758.ift6758.client.CometML import CometMLClient
 from ift6758.ift6758.client.serving_client import ServingClient
+from ift6758.ift6758.client.NeuralNet import get_probs_nn
 from serving.constant import DOWNLOADED_MODEL_PATH
 from constant import model_name_map, model_feature_map
-from ift6758.ift6758.client.NeuralNet import get_probs_nn
 
 serving_client_obj = ServingClient()
 LOG_FILE = os.environ.get("FLASK_LOG", "flask.log")
@@ -44,7 +44,8 @@ def before_first_request():
 
     # TODO: any other initialization before the first request (e.g. load default model)
     # default model
-    default_model = "linearmodel-distance"
+    # default_model = "linearmodel-distance"
+    default_model = "neural-network-model"
     comet_ml_obj = CometMLClient(model_name=default_model, version="1.0.0", workspace="data-science-workspace")
     file_path = DOWNLOADED_MODEL_PATH + default_model + ".pkl"
     serving_client_obj.model_name = model_name_map[default_model]
@@ -60,10 +61,10 @@ def before_first_request():
 @app.route("/logs", methods=["GET"])
 def logs():
     """Reads data from the log file and returns them as the response"""
-    
+
     # TODO: read the log file specified and return the data
 
-    with open(LOG_FILE,'r') as log_data:
+    with open(LOG_FILE, 'r') as log_data:
         response = log_data.readlines()
     return jsonify(response)  # response must be json serializable!
 
@@ -144,12 +145,10 @@ def predict():
     """
     # Get POST json data
     json_data = request.get_json()
-    app.logger.info(json_data)
 
     # TODO:
     str_json = json.dumps(json_data)
     X = pd.read_json(str_json, orient="records")
-    print(X.head())
     # X = X.to_numpy()
     if serving_client_obj.model_name == "Neural_Network":
         # test_dataloader = transform_data_for_nn(X_test=X)
@@ -161,7 +160,6 @@ def predict():
         # "prediction": np.argmax(Y_pred_proba_list, axis=1).tolist(),
         "goal_probabilities": [round(x, 4) for x in Y_pred_proba_list[:, 1].tolist()]
     }
-    app.logger.info(response)
     return jsonify(response)  # response must be json serializable!
 
 
