@@ -1,4 +1,3 @@
-import configparser
 import os
 import pickle
 
@@ -6,17 +5,16 @@ import torch
 from comet_ml.api import API
 
 from ift6758.ift6758.client.NeuralNet import NeuralNets
-from serving.constant import COMET_FILE
+# from serving.constant import COMET_FILE
 from serving.constant import DOWNLOADED_MODEL_PATH
 from serving.constant import model_name_map
 
-config = configparser.ConfigParser()
-# config.read('../configfile.ini')
-config.read(COMET_FILE)
-print(COMET_FILE)
-type_env = "comet_ml_prod"  # comet_ml_prod
-COMET_API_KEY = config[type_env]['api_key']
-COMET_PROJECT_NAME_PLAYOFFS = config[type_env]['project_name_final_test_playoffs']
+# config = configparser.ConfigParser()
+# # config.read('../configfile.ini')
+# config.read(COMET_FILE)
+# print(COMET_FILE)
+# type_env = "comet_ml_prod"  # comet_ml_prod
+COMET_API_KEY = os.environ['COMET_API_KEY']  # config[type_env]['api_key']
 
 
 class CometMLClient():
@@ -44,6 +42,7 @@ class CometMLClient():
                                              output_path=self.downloaded_model_path, expand=True)
             download_success = False
             list_of_models = os.listdir(DOWNLOADED_MODEL_PATH)
+            print(list_of_models)
             for i in list_of_models:
                 if model_name_map[self.model_name] in i:
                     download_success = True
@@ -52,6 +51,8 @@ class CometMLClient():
                 response = {"message": "Download Successfully"}
             else:
                 response = {"message": "Some Error occurred while downloading, please check model name / version etc."}
+            print("response", response)
             return response
         except Exception as e:
+            print(e)
             return {"message": "Some Error occurred while downloading, please check model name / version etc."}
