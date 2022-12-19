@@ -53,3 +53,5 @@ data
 # Misc
 *.DS_Store
 model/
+
+docker-project-template-main/flask.log
