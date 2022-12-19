@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 from ift6758.ift6758.client.feature_engineering import main_feature_engg
 from ift6758.ift6758.client.game_client import GameClient
 
-gc_obj = GameClient()
+if 'gc_obj' not in st.session_state:
+    st.session_state.gc_obj = GameClient()
 
 drop_features_for_display = ['about_time_remaining', 'home_team', 'away_team', 'action_team_name',
                              'event_type_id', 'about_goal_away', 'about_goal_home']
@@ -37,7 +38,7 @@ if gameID:
     if st.button('Ping game'):
         # call the game client here in order to get a new sample of events differnt from previous ones
         # and return the 9 parameters below
-        data = gc_obj.get_live_data(game_id=gameID)
+        data = st.gc_obj.get_live_data(game_id=gameID)
         df_input = main_feature_engg(df=data)
         df_imp_features = df_input[all_imp_features]
         response = requests.post(
