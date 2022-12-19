@@ -25,6 +25,7 @@ with st.sidebar:
             json=data
         )
         st.write(response.json()["message"])
+    option = st.multiselect(label='Visualize model evaluation',options=['ROC curve', 'Goal rate by predicted decile', 'Cumulative goal rate by predicted decile'])
 
 gameID = st.text_input("Game ID", value="", max_chars=10)
 if gameID:
@@ -70,6 +71,47 @@ if gameID:
         df_feg = df_feg.drop(drop_features_for_display, axis=1)
         st.write(df_feg)
 
-        # Bonus: display a graph - the input will be the dataframe "df_input"
-        # *** I will continue working on this part ***
-        st.write("caption for bonus graph")
+    # Bonus: display graphs - the input is the dataframe "df_input"
+    if 'df_input' in locals():
+        if option.count('ROC curve')>0:
+            st.subheader('ROC curve:')
+            st.write("This curve displays the performance of a the model at all classification thresholds. The Area Under the Curve (AUC) reflects the overall performance. A random model would have an AUC=0.5; the better the model, the more its AUC will be close to 1.")
+            fpr, tpr, thresholds = metrics.roc_curve(df_input[['is_goal']], df_input[['goal_probabilities']])
+            roc_auc = metrics.auc(fpr, tpr)
+            fig, ax = plt.subplots()
+            ax = plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+            plt.legend(loc = 'lower right')
+            plt.plot([0, 1], [0, 1],'r--')
+            plt.xlim([0, 1])
+            plt.ylim([0, 1])
+            plt.ylabel('True Positive Rate')
+            plt.xlabel('False Positive Rate')
+            st.pyplot(fig)
+        if option.count('Goal rate by predicted decile')>0:
+            st.subheader('Goal rate by predicted decile:')
+            st.write("The observations are binned into deciles, and for each, we compute the proportion of goals (rate). Note that lower deciles are those with the highest probability of goal. If the model performs well, there should be a relationship such that the lower the decile, the higher the goal rate.")
+            fig, ax = plt.subplots(1, 1)
+            goal_prob = df_input[['goal_probabilities']]
+            df = df_input[['is_goal']]
+            df["probablity_of_goal"] = goal_prob
+            df['decile_of_goal'] = round(df["probablity_of_goal"].rank(pct = True)*10)
+            goal_rate = round((df.groupby(by='decile_of_goal').sum() / df.groupby(by='decile_of_goal').count())*10)
+            goal_rate['decile'] = goal_rate.index
+            ax.plot(goal_rate["decile"], goal_rate["is_goal"])
+            st.pyplot(fig)
+        if option.count('Cumulative goal rate by predicted decile')>0:
+            st.subheader('Cumulative goal rate by predicted decile:')
+            st.write("This graph reflects the proportion of goals for all events which were predicted to be below or at a given decile. If the model performs well, there should be a relationship such that the lower the decile, the higher the goal rate.")    
+            fig, ax = plt.subplots(1, 1)
+            goal_prob = df_input[['goal_probabilities']]
+            df = df_input[['is_goal']]
+            df["probablity_of_goal"] = goal_prob
+            df['decile_of_goal'] = round(df["probablity_of_goal"].rank(pct = True)*10)
+            goal_rate = round((df.groupby(by='decile_of_goal').sum() / df.groupby(by='decile_of_goal').count())*10)
+            goal_rate['decile'] = goal_rate.index
+            goal_rate['cum_sum'] = goal_rate.loc[::-1, 'is_goal'].cumsum()[::-1]
+            goal_rate['cum_perc'] = 10*goal_rate['cum_sum'] / goal_rate['is_goal'].sum()
+            ax.plot(goal_rate["decile"], goal_rate["cum_perc"])
+            st.pyplot(fig)
+
+
