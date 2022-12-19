@@ -25,7 +25,7 @@ class GameClient:
         if len(event_arr) > self.last_entry_idx:
             df = self.process_live_data(game_id, game_dict, self.last_entry_idx)
             self.last_entry_idx = len(event_arr) - 1
-        print("df", df.head())
+        
         return df
 
     def process_live_data(self, game_id, game_dict, entry_idx):
