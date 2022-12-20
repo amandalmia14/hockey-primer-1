@@ -124,8 +124,6 @@ def data_parsing(data, id, event_type, period_dict, team_detail_dict, last_event
     """
     players_data = data["players"]
     result_data = data["result"]
-    print("result_data")
-    print(result_data)
     about_data = data["about"]
     coordinates_data = data["coordinates"]
     team_data = data["team"]

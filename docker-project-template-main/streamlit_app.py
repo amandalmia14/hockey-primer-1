@@ -27,60 +27,66 @@ with st.sidebar:
     if st.button('Load Model'):
         # Load model from Comet ML here using the 3 inputs above
         response = requests.post(
-            "http://serving:8080/download_registry_model",
-            # "http://localhost:8080/download_registry_model",
+            # "http://serving:8080/download_registry_model",
+            "http://localhost:8080/download_registry_model",
             json=data
         )
         st.write(response.json()["message"])
     option = st.multiselect(label='Visualize model evaluation',options=['ROC curve', 'Goal rate by predicted decile', 'Cumulative goal rate by predicted decile'])
 
-gameID = st.text_input("Game ID", value="2021020329", max_chars=10)
+gameID = st.text_input("Game ID", value="2022020506", max_chars=10)
 if gameID:
     if st.button('Ping game'):
         # call the game client here in order to get a new sample of events differnt from previous ones
         # and return the 9 parameters below
         data = st.session_state.gc_obj.get_live_data(game_id=gameID)
-        if len(data) <1:
+        st.write(data.shape)
+        if len(data) < 1:
             st.write("There is no new data to displayed. Please check for another game!")
-        else:    
+        else:
             df_input = main_feature_engg(df=data)
-            df_imp_features = df_input[all_imp_features]
-            response = requests.post(
-                "http://serving:8080/predict",
-                # "http://localhost:8080/predict",
-                json=json.loads(df_imp_features.to_json())
-            )
-            # df_input = pd.DataFrame.from_dict(response.json())
-            df_input["goal_probabilities"] = response.json()["goal_probabilities"]
-            last_row_data = df_input.iloc[-1]
-            time_left = last_row_data["about_time_remaining"]
+            if len(df_input) > 1:
+                df_imp_features = df_input[all_imp_features]
+                response = requests.post(
+                    # "http://serving:8080/predict",
+                    "http://localhost:8080/predict",
+                    json=json.loads(df_imp_features.to_json())
+                )
+                # df_input = pd.DataFrame.from_dict(response.json())
+                df_input["goal_probabilities"] = response.json()["goal_probabilities"]
+                last_row_data = df_input.iloc[-1]
+                time_left = last_row_data["about_time_remaining"]
+                sum_df = df_input.groupby(['action_team_name'])['goal_probabilities'].sum()
+                json_data_total_prob = json.loads(sum_df.to_json())
+                home_team_name = df_input["home_team"].unique().tolist()[0]
+                away_team_name = df_input["away_team"].unique().tolist()[0]
+                period = last_row_data["game_period"]
+                home_team_current_score = last_row_data["about_goal_home"]
+                away_team_current_score = last_row_data["about_goal_away"]
+                if home_team_name in json_data_total_prob:
+                    home_team_sum_of_expected_goals = json_data_total_prob[home_team_name]
+                else:
+                    home_team_sum_of_expected_goals = 0.0
+                if away_team_name in json_data_total_prob:
+                    away_team_sum_of_expected_goals = json_data_total_prob[away_team_name]
+                else:
+                    away_team_sum_of_expected_goals = 0.0
+                # Display:
+                st.subheader(str('Game #' + str(gameID) + "\:  " + str(home_team_name) + " vs\. " + str(away_team_name)))
+                st.subheader(str('Period: ' + str(period) + "   -   " + str(time_left) + " minutes left"))
+                col1, col2 = st.columns(2)
+                col1.metric(label=str(str(home_team_name) + " xG (actual)"), value=str(
+                    str(round(home_team_sum_of_expected_goals, 1)) + " (" + str(home_team_current_score) + ")"),
+                            delta=round(home_team_sum_of_expected_goals - home_team_current_score, 1))
+                col2.metric(label=str(str(away_team_name) + " xG (actual)"), value=str(
+                    str(round(away_team_sum_of_expected_goals, 1)) + " (" + str(away_team_current_score) + ")"),
+                            delta=round(away_team_sum_of_expected_goals - away_team_current_score, 1))
+                st.header("Data and Predictions")
 
-            sum_df = df_input.groupby(['action_team_name'])['goal_probabilities'].sum()
-
-            json_data_total_prob = json.loads(sum_df.to_json())
-            home_team_name = df_input["home_team"].unique().tolist()[0]
-            away_team_name = df_input["away_team"].unique().tolist()[0]
-            period = last_row_data["game_period"]
-            home_team_current_score = last_row_data["about_goal_home"]
-            away_team_current_score = last_row_data["about_goal_away"]
-
-            home_team_sum_of_expected_goals = json_data_total_prob[home_team_name]
-            away_team_sum_of_expected_goals = json_data_total_prob[away_team_name]
-
-            # Display:
-            st.subheader(str('Game #' + str(gameID) + "\:  " + str(home_team_name) + " vs\. " + str(away_team_name)))
-            st.subheader(str('Period: ' + str(period) + "   -   " + str(time_left) + " minutes left"))
-            col1, col2 = st.columns(2)
-            col1.metric(label=str(str(home_team_name) + " xG (actual)"), value=str(
-                str(round(home_team_sum_of_expected_goals, 1)) + " (" + str(home_team_current_score) + ")"),
-                        delta=round(home_team_sum_of_expected_goals - home_team_current_score, 1))
-            col2.metric(label=str(str(away_team_name) + " xG (actual)"), value=str(
-                str(round(away_team_sum_of_expected_goals, 1)) + " (" + str(away_team_current_score) + ")"),
-                        delta=round(away_team_sum_of_expected_goals - away_team_current_score, 1))
-            st.header("Data and Predictions")
-
-            df_input = df_input.drop(drop_features_for_display, axis=1)
-            st.write(df_input)
+                df_input = df_input.drop(drop_features_for_display, axis=1)
+                st.write(df_input)
+            else:
+                st.write("No relevant data retrieved during this instance, please refresh and retry later !!")
 
         # Bonus: display graphs - the input is the dataframe "df_input"
         if 'df_input' in locals():
