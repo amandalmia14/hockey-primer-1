@@ -124,6 +124,8 @@ def data_parsing(data, id, event_type, period_dict, team_detail_dict, last_event
     """
     players_data = data["players"]
     result_data = data["result"]
+    print("result_data")
+    print(result_data)
     about_data = data["about"]
     coordinates_data = data["coordinates"]
     team_data = data["team"]
@@ -172,7 +174,10 @@ def data_parsing(data, id, event_type, period_dict, team_detail_dict, last_event
     if event_type == "Goal":
         data_dict["event_strength_name"] = result_data["strength"]["name"]
         data_dict["event_strength_code"] = result_data["strength"]["code"]
-        data_dict["event_game_winning_goal"] = result_data["gameWinningGoal"]
+        if "gameWinningGoal" not in result_data:
+            data_dict["event_game_winning_goal"] = None
+        else:
+            data_dict["event_game_winning_goal"] = result_data["gameWinningGoal"]
         if "emptyNet" not in result_data:
             data_dict["event_empty_net"] = "Missing Data"
         else:
