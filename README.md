@@ -798,7 +798,7 @@ Whatever the work which we did on the Milestone 1 and Milestone 2 we need to pro
 dockerization of the entire setup. 
 - All the codes resides under the folder `docker-project-template-main`. 
 - Make sure you have `COMET_API_KEY` in your environment variable and Docker is installed in your system.
-- Navigate to the folder as mentioned above and open a command prompt / terminal and run  `docker-compose --build up`
+- Navigate to the folder as mentioned above and open a command prompt / terminal and run  `docker-compose up --build`
 
 
 # Conclusion
