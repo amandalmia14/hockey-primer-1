@@ -27,8 +27,8 @@ with st.sidebar:
     if st.button('Load Model'):
         # Load model from Comet ML here using the 3 inputs above
         response = requests.post(
-            # "http://serving:8080/download_registry_model",
-            "http://localhost:8080/download_registry_model",
+            "http://serving:8080/download_registry_model",
+            # "http://localhost:8080/download_registry_model",
             json=data
         )
         st.write(response.json()["message"])
@@ -48,8 +48,8 @@ if gameID:
             if len(df_input) > 1:
                 df_imp_features = df_input[all_imp_features]
                 response = requests.post(
-                    # "http://serving:8080/predict",
-                    "http://localhost:8080/predict",
+                    "http://serving:8080/predict",
+                    # "http://localhost:8080/predict",
                     json=json.loads(df_imp_features.to_json())
                 )
                 # df_input = pd.DataFrame.from_dict(response.json())
