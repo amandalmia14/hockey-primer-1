@@ -96,7 +96,7 @@ def download_registry_model():
     # TODO: check to see if the model you are querying for is already downloaded
     list_of_models_downloaded = os.listdir(DOWNLOADED_MODEL_PATH)
     for i in list_of_models_downloaded:
-        if json["model"] in model_name_map and json["model"] == "1.0.0":
+        if json["model"] in model_name_map and json["version"] == "1.0.0":
             if model_name_map[json["model"]] in i:
                 download_exist = True
                 break
