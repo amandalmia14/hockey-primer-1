@@ -33,9 +33,9 @@ with st.sidebar:
         )
         st.write(response.json()["message"])
     option = st.multiselect(label='Visualize model evaluation',options=['ROC curve', 'Goal rate by predicted decile', 'Cumulative goal rate by predicted decile'])
-    st.text("Below Model Names the Milestone 3 is configured for")
-    st.text("xgboost-feature-selection-class-weights")
-    st.text("neural-network-model")
+    st.subheader("Below Model Names the Milestone 3 is configured for")
+    st.markdown("- xgboost-feature-selection-class-weights")
+    st.markdown("- neural-network-model")
 gameID = st.text_input("Game ID", value="2022020506", max_chars=10)
 if gameID:
     if st.button('Ping game'):
