@@ -36,7 +36,7 @@ with st.sidebar:
     st.subheader("Below Model Names the Milestone 3 is configured for")
     st.markdown("- xgboost-feature-selection-class-weights")
     st.markdown("- neural-network-model")
-gameID = st.text_input("Game ID", value="2022020506", max_chars=10)
+gameID = st.text_input("Game ID", value="2021020329", max_chars=10)
 if gameID:
     if st.button('Ping game'):
         # call the game client here in order to get a new sample of events differnt from previous ones
