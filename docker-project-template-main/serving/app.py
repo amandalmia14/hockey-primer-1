@@ -45,7 +45,7 @@ def before_first_request():
     # TODO: any other initialization before the first request (e.g. load default model)
     # default model
     # default_model = "linearmodel-distance"
-    default_model = "neural-network-model"
+    default_model = "xgboost-feature-selection-class-weights"
     comet_ml_obj = CometMLClient(model_name=default_model, version="1.0.0", workspace="data-science-workspace")
     file_path = DOWNLOADED_MODEL_PATH + default_model + ".pkl"
     serving_client_obj.model_name = model_name_map[default_model]

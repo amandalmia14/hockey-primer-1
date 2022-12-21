@@ -21,7 +21,7 @@ all_imp_features = ['angle', 'distance_from_last_event', 'empty_net', 'shot_type
 st.title("Hockey Visualization App")
 with st.sidebar:
     workspace = st.text_input("Workspace", value="data-science-workspace")
-    model = st.text_input("Model", value="neural-network-model")
+    model = st.text_input("Model", value="xgboost-feature-selection-class-weights")
     version = st.text_input("Version", value="1.0.0")
     data = {"workspace": workspace, "model": model, "version": version}
     if st.button('Load Model'):
@@ -33,7 +33,9 @@ with st.sidebar:
         )
         st.write(response.json()["message"])
     option = st.multiselect(label='Visualize model evaluation',options=['ROC curve', 'Goal rate by predicted decile', 'Cumulative goal rate by predicted decile'])
-
+    st.text("Below Model Names the Milestone 3 is configured for")
+    st.text("xgboost-feature-selection-class-weights")
+    st.text("neural-network-model")
 gameID = st.text_input("Game ID", value="2022020506", max_chars=10)
 if gameID:
     if st.button('Ping game'):
